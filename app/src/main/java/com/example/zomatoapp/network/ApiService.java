@@ -1,6 +1,7 @@
 package com.example.zomatoapp.network;
 
 import com.example.zomatoapp.dataModel.CategoryListModel;
+import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.retrofitInterface.CommonApi;
 import com.example.zomatoapp.utils.StaticValues;
 
@@ -25,9 +26,19 @@ public class ApiService {
     }
 
     public void retrieveCategoryList(RetrofitApiCallback<CategoryListModel> callback) {
-        Call commonCall = HttpUtils.getApiGatewayRetrofit().create(CommonApi.class).getCategories(
+        Call commonCall = HttpUtils.getApiGatewayRetrofit().create(CommonApi.class).getCategories(StaticValues.API_VERSION);
+
+        commonCall.enqueue(callback);
+    }
+
+    public void retrieveCollections(RetrofitApiCallback<CollectionListModel> callback) {
+        Call commonCall = HttpUtils.getApiGatewayRetrofit().create(CommonApi.class).getCollections(
                 StaticValues.API_VERSION,
-                StaticValues.USER_KEY);
+                280,
+                40.732013,
+                -73.996155,
+                5
+        );
 
         commonCall.enqueue(callback);
     }
