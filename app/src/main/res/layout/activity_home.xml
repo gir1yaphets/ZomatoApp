@@ -25,17 +25,17 @@
             android:text="Hello World!"
             android:onClick="@{viewModel::onTextClick}"
             />
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/vpFragmentViewPager"
-            android:layout_above="@id/tlTabLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+<!--        <androidx.viewpager2.widget.ViewPager2-->
+<!--            android:id="@+id/vpFragmentViewPager"-->
+<!--            android:layout_above="@id/tlTabLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"/>-->
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tlTabLayout"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="50dp"/>
+<!--        <com.google.android.material.tabs.TabLayout-->
+<!--            android:id="@+id/tlTabLayout"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:minHeight="50dp"/>-->
     </RelativeLayout>
 </layout>

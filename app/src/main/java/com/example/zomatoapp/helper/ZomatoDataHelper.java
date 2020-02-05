@@ -3,6 +3,7 @@ package com.example.zomatoapp.helper;
 import android.content.Context;
 
 import com.example.zomatoapp.dataModel.CollectionListModel;
+import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
@@ -35,6 +36,34 @@ public class ZomatoDataHelper {
                     public void onSuccess(Response<CollectionListModel> response) {
                         CollectionListModel collectionModelList = response.body();
                         EventBus.getDefault().post(new OnCollectionsSuccessEvent(collectionModelList));
+                    }
+
+                    @Override
+                    public void onError(RetrofitErrorModel errors) {
+
+                    }
+
+                    @Override
+                    public void onTechIssueError(Throwable t) {
+
+                    }
+                }));
+    }
+
+    public void retrieveRestaurant(){
+        apiService.retrieveRestaurant(new RetrofitApiCallback<>(
+                new RetrofitApiCallback.OnActionHandleListener<RestaurantModel>() {
+                    @Override
+                    public void onBeforeHandling() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response<RestaurantModel> response) {
+                        RestaurantModel restaurantModel = response.body();
+                        //EventBus.getDefault().post(new OnCollectionsSuccessEvent(restaurantModel));
+                        int a = 1;
+                        return;
                     }
 
                     @Override
