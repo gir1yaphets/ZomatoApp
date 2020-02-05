@@ -10,39 +10,37 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.zomatoapp.utils.StaticValues.BASE_URL;
+import static com.example.zomatoapp.utils.StaticValues.USER_KEY;
+import static com.example.zomatoapp.utils.StaticValues.USER_KEY_VALUE;
 
 public class HttpUtils {
     public static final String TAG = HttpUtils.class.getSimpleName();
 
     private static Map<String, Retrofit> retrofits = new HashMap<>();
 
-    private static OkHttpClient getHttpClientWithRefreshTokenSupport(Context context, boolean refreshSupport, boolean withCache) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-        OkHttpClient.Builder mBuilder = new OkHttpClient().newBuilder();
-        mBuilder.readTimeout(30, TimeUnit.SECONDS);
-        mBuilder.connectTimeout(15, TimeUnit.SECONDS);
-        return mBuilder.build();
-    }
-
     private static OkHttpClient getOKHttpClient() {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                Log.d(TAG, "log: message = " + message);
-            }
-        });
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor((message -> Log.d(TAG, "log: message = " + message)));
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.readTimeout(30, TimeUnit.SECONDS);
+        builder.connectTimeout(15, TimeUnit.SECONDS);
         builder.addInterceptor(loggingInterceptor);
+
+        builder.addInterceptor((chain -> {
+            Request request = chain.request()
+                    .newBuilder()
+                    .addHeader(USER_KEY, USER_KEY_VALUE)
+                    .build();
+            return chain.proceed(request);
+        }));
         return builder.build();
     }
 

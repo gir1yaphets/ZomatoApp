@@ -85,7 +85,5 @@ public class RetrofitApiCallback<T> extends BaseCallback<T> {
         void onError(RetrofitErrorModel errors);
 
         void onTechIssueError(Throwable t);
-
-        void onSpecialHandleError(Response<T> response);
     }
 }
