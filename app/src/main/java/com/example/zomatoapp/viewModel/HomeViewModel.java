@@ -15,6 +15,6 @@ public class HomeViewModel {
     }
 
     public void onTextClick(View view) {
-        zomatoDataHelper.retrieveCollection();
+        zomatoDataHelper.retrieveRestaurant();
     }
 }

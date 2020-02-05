@@ -2,7 +2,9 @@ package com.example.zomatoapp.network;
 
 import com.example.zomatoapp.dataModel.CategoryListModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
+import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.retrofitInterface.CommonApi;
+import com.example.zomatoapp.retrofitInterface.RestaurantApi;
 import com.example.zomatoapp.utils.StaticValues;
 
 import retrofit2.Call;
@@ -41,5 +43,14 @@ public class ApiService {
         );
 
         commonCall.enqueue(callback);
+    }
+
+    public void retrieveRestaurant(RetrofitApiCallback<RestaurantModel> callback) {
+        Call restaurantCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getRestaurant(
+                StaticValues.API_VERSION,
+                16774318
+        );
+
+        restaurantCall.enqueue(callback);
     }
 }
