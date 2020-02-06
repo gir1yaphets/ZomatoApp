@@ -55,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
 
         initView();
 
+        mViewModel.onTextClick(null);
         EventBus.getDefault().register(this);
     }
 
@@ -87,6 +88,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        viewPager.setUserInputEnabled(false);
         viewPager.setOffscreenPageLimit(2);
     }
 
