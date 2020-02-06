@@ -11,8 +11,6 @@ import com.example.zomatoapp.viewModel.HomeViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
 
         mViewModel.retrieveCollections();
         mViewModel.retrieveRestaurants();
-        EventBus.getDefault().register(this);
     }
 
     private void initView() {
