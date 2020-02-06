@@ -62,7 +62,6 @@ public class ZomatoDataHelper {
                     public void onSuccess(Response<RestaurantModel> response) {
                         RestaurantModel restaurantModel = response.body();
                         //EventBus.getDefault().post(new OnCollectionsSuccessEvent(restaurantModel));
-                        int a = 1;
                         return;
                     }
 
