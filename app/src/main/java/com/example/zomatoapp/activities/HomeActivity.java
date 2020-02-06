@@ -49,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         initView();
 
         mViewModel.retrieveCollections();
-        mViewModel.retrieveRestaurants();
+        mViewModel.getSearchResult();
     }
 
     private void initView() {

@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.CollectionListModel;
-import com.example.zomatoapp.dataModel.RestaurantModel;
+import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
-import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
+import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
 import com.example.zomatoapp.ui.CollectionListAdapter;
+import com.example.zomatoapp.ui.RestaurantListAdapter;
 import com.example.zomatoapp.viewModel.CollectionItemViewModel;
+import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,6 +41,8 @@ public class DiningFragment extends Fragment {
     private RecyclerView rvCollectionsView;
     private CollectionListAdapter collectionAdapter;
 
+    private RecyclerView rvRestaurantListView;
+    private RestaurantListAdapter restaurantListAdapter;
 
     public List<CollectionItemViewModel> getCollectionData() {
         return collectionData;
@@ -49,6 +53,16 @@ public class DiningFragment extends Fragment {
     }
 
     private List<CollectionItemViewModel> collectionData = new ArrayList<>();
+
+    public List<RestaurantItemViewModel> getRestaurantData() {
+        return restaurantData;
+    }
+
+    public void setRestaurantData(List<RestaurantItemViewModel> restaurantData) {
+        this.restaurantData = restaurantData;
+    }
+
+    private List<RestaurantItemViewModel> restaurantData = new ArrayList<>();
 
     public static DiningFragment newInstance() {
         return new DiningFragment();
@@ -71,6 +85,12 @@ public class DiningFragment extends Fragment {
 
         rvCollectionsView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
         rvCollectionsView.setAdapter(collectionAdapter);
+
+        rvRestaurantListView = mBinding.rvRestaurantList;
+        restaurantListAdapter = new RestaurantListAdapter(restaurantData);
+
+        rvRestaurantListView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
+        rvRestaurantListView.setAdapter(restaurantListAdapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -90,8 +110,22 @@ public class DiningFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRestaurantsSuccessEvent(OnRestaurantsSuccessEvent event) {
-        RestaurantModel restaurantModel = event.getRestaurantModel();
+    public void onRestaurantSearchSuccessEvent(OnSearchSuccessEvent event) {
+        SearchModel restaurantModel = event.getSearchModel();
+        for (SearchModel.RestaurantsBean restaurantsBean : restaurantModel.getRestaurants()) {
+            SearchModel.RestaurantsBean.RestaurantBean restaurantBean = restaurantsBean.getRestaurant();
+            RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
+            viewModel.name.set(restaurantBean.getName());
+            viewModel.description.set(restaurantBean.getCuisines());
+            viewModel.status.set(restaurantBean.getTimings());
+            viewModel.location.set(restaurantBean.getLocation().getAddress());
+            viewModel.imageUrl.set(restaurantBean.getThumb());
+            viewModel.rating.set(restaurantBean.getUser_rating().getAggregate_rating());
+//            viewModel.price.set(restaurantBean.getPrice_range());
+            restaurantData.add(viewModel);
+        }
 
+        restaurantListAdapter.setData(restaurantData);
+        restaurantListAdapter.notifyDataSetChanged();
     }
 }

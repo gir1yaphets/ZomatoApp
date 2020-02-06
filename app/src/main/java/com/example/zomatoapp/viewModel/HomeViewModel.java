@@ -20,4 +20,8 @@ public class HomeViewModel {
     public void retrieveRestaurants() {
         zomatoDataHelper.retrieveRestaurant();
     }
+
+    public void getSearchResult() {
+        zomatoDataHelper.getSearchResult();
+    }
 }

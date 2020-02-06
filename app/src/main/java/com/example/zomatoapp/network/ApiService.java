@@ -7,6 +7,8 @@ import com.example.zomatoapp.retrofitInterface.CommonApi;
 import com.example.zomatoapp.retrofitInterface.RestaurantApi;
 import com.example.zomatoapp.utils.StaticValues;
 
+import java.util.Map;
+
 import retrofit2.Call;
 
 public class ApiService {
@@ -49,6 +51,15 @@ public class ApiService {
         Call restaurantCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getRestaurant(
                 StaticValues.API_VERSION,
                 16774318
+        );
+
+        restaurantCall.enqueue(callback);
+    }
+
+    public void retrieveSearchResult(RetrofitApiCallback<RestaurantModel> callback, Map<String, Object> params) {
+        Call restaurantCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getSearchResult(
+                StaticValues.API_VERSION,
+                params
         );
 
         restaurantCall.enqueue(callback);
