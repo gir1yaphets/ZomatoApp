@@ -44,6 +44,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRestaurantList"
+                    android:layout_below="@id/rvCollectionList"
+                    android:layout_marginTop="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
             </RelativeLayout>
 
         </androidx.core.widget.NestedScrollView>

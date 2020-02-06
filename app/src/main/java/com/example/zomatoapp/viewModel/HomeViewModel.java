@@ -1,7 +1,6 @@
 package com.example.zomatoapp.viewModel;
 
 import android.content.Context;
-import android.view.View;
 
 import com.example.zomatoapp.helper.ZomatoDataHelper;
 
@@ -14,7 +13,11 @@ public class HomeViewModel {
         zomatoDataHelper = new ZomatoDataHelper(context);
     }
 
-    public void onTextClick(View view) {
+    public void retrieveCollections() {
         zomatoDataHelper.retrieveCollection();
+    }
+
+    public void retrieveRestaurants() {
+        zomatoDataHelper.retrieveRestaurant();
     }
 }

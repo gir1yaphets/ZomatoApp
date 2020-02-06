@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
+import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
 import com.example.zomatoapp.network.RetrofitErrorModel;
@@ -61,8 +62,7 @@ public class ZomatoDataHelper {
                     @Override
                     public void onSuccess(Response<RestaurantModel> response) {
                         RestaurantModel restaurantModel = response.body();
-                        //EventBus.getDefault().post(new OnCollectionsSuccessEvent(restaurantModel));
-                        return;
+                        EventBus.getDefault().post(new OnRestaurantsSuccessEvent(restaurantModel));
                     }
 
                     @Override

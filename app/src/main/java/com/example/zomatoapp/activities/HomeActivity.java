@@ -1,12 +1,9 @@
 package com.example.zomatoapp.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.zomatoapp.R;
-import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.databinding.ActivityHomeBinding;
-import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.fragments.DiningFragment;
 import com.example.zomatoapp.fragments.NightLifeFragment;
 import com.example.zomatoapp.fragments.ProfileFragment;
@@ -15,8 +12,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +50,8 @@ public class HomeActivity extends AppCompatActivity {
 
         initView();
 
-        mViewModel.onTextClick(null);
+        mViewModel.retrieveCollections();
+        mViewModel.retrieveRestaurants();
         EventBus.getDefault().register(this);
     }
 
@@ -99,13 +95,4 @@ public class HomeActivity extends AppCompatActivity {
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> tab.setText(labels.get(position))).attach();
     }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCollectionsSuccessEvent(OnCollectionsSuccessEvent event) {
-        CollectionListModel collectionListModel = event.getCollectionListModel();
-        for (CollectionListModel.Collections collectionModel : collectionListModel.getCollections()) {
-            Log.d(TAG, "onCollectionsSuccessEvent: description = " + collectionModel.getCollection().getDescription());
-        }
-    }
-
 }

@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.CollectionListModel;
+import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
+import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.ui.CollectionListAdapter;
 import com.example.zomatoapp.viewModel.CollectionItemViewModel;
 
@@ -35,17 +37,18 @@ public class DiningFragment extends Fragment {
 
     private Context context;
     private RecyclerView rvCollectionsView;
-    private CollectionListAdapter adapter;
+    private CollectionListAdapter collectionAdapter;
 
-    public List<CollectionItemViewModel> getData() {
-        return data;
+
+    public List<CollectionItemViewModel> getCollectionData() {
+        return collectionData;
     }
 
-    public void setData(List<CollectionItemViewModel> data) {
-        this.data = data;
+    public void setCollectionData(List<CollectionItemViewModel> collectionData) {
+        this.collectionData = collectionData;
     }
 
-    private List<CollectionItemViewModel> data = new ArrayList<>();
+    private List<CollectionItemViewModel> collectionData = new ArrayList<>();
 
     public static DiningFragment newInstance() {
         return new DiningFragment();
@@ -64,10 +67,10 @@ public class DiningFragment extends Fragment {
 
     private void initView() {
         rvCollectionsView = mBinding.rvCollectionList;
-        adapter = new CollectionListAdapter(data);
+        collectionAdapter = new CollectionListAdapter(collectionData);
 
         rvCollectionsView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-        rvCollectionsView.setAdapter(adapter);
+        rvCollectionsView.setAdapter(collectionAdapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -79,10 +82,16 @@ public class DiningFragment extends Fragment {
             CollectionItemViewModel viewModel = new CollectionItemViewModel();
             viewModel.collectionTitle.set(collectionModel.getCollection().getTitle());
             viewModel.imageUrl.set(collectionModel.getCollection().getImage_url());
-            data.add(viewModel);
+            collectionData.add(viewModel);
         }
 
-        adapter.setData(data);
-        adapter.notifyDataSetChanged();
+        collectionAdapter.setData(collectionData);
+        collectionAdapter.notifyDataSetChanged();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRestaurantsSuccessEvent(OnRestaurantsSuccessEvent event) {
+        RestaurantModel restaurantModel = event.getRestaurantModel();
+
     }
 }
