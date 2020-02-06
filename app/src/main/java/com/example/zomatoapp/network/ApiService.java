@@ -57,11 +57,11 @@ public class ApiService {
     }
 
     public void retrieveSearchResult(RetrofitApiCallback<RestaurantModel> callback, Map<String, Object> params) {
-        Call restaurantCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getSearchResult(
+        Call searchCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getSearchResult(
                 StaticValues.API_VERSION,
                 params
         );
 
-        restaurantCall.enqueue(callback);
+        searchCall.enqueue(callback);
     }
 }

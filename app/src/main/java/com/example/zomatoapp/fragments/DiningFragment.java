@@ -106,7 +106,6 @@ public class DiningFragment extends Fragment {
         }
 
         collectionAdapter.setData(collectionData);
-        collectionAdapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -118,14 +117,15 @@ public class DiningFragment extends Fragment {
             viewModel.name.set(restaurantBean.getName());
             viewModel.description.set(restaurantBean.getCuisines());
             viewModel.status.set(restaurantBean.getTimings());
-            viewModel.location.set(restaurantBean.getLocation().getAddress());
+            viewModel.location.set(restaurantBean.getLocation().getCity());
             viewModel.imageUrl.set(restaurantBean.getThumb());
             viewModel.rating.set(restaurantBean.getUser_rating().getAggregate_rating());
-//            viewModel.price.set(restaurantBean.getPrice_range());
+            int priceForTwo = restaurantBean.getAverage_cost_for_two();
+            String priceText = "$" + priceForTwo + " for two people(approx.)";
+            viewModel.price.set(priceText);
             restaurantData.add(viewModel);
         }
 
         restaurantListAdapter.setData(restaurantData);
-        restaurantListAdapter.notifyDataSetChanged();
     }
 }
