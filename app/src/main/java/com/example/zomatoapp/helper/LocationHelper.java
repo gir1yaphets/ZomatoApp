@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -20,11 +21,16 @@ public class LocationHelper {
     private LocationManager locationManager;
     private static LocationHelper locationHelper;
 
+    private Address address;
+    private Location currentLocation = new Location("0.0");
+
     public Location getCurrentLocation() {
         return currentLocation;
     }
 
-    private Location currentLocation = new Location("0.0");
+    public Address getAddress() {
+        return address;
+    }
 
     public static LocationHelper getInstance() {
         if (locationHelper == null) {
@@ -37,8 +43,7 @@ public class LocationHelper {
         return locationHelper;
     }
 
-
-    public String getLocations(Context context) {
+    public Location getLocation(Context context) {
         String strLocation = "0,0";
         DecimalFormat df = new DecimalFormat("#####0.000000");
         if (!checkPermission(context, PERMISSION.ACCESS_FINE_LOCATION)) {
@@ -57,19 +62,19 @@ public class LocationHelper {
             String provider = locationManager.getBestProvider(criteria, true);
 
             currentLocation = locationManager.getLastKnownLocation(provider);
+            String address = convertAddress(context, currentLocation.getLatitude(), currentLocation.getLongitude());
+            Log.d("", "getLocation: address = " + address);
 
             if (currentLocation != null) {
                 strLocation = df.format(currentLocation.getLatitude()) + "," + df.format(currentLocation.getLongitude());
             }
-
-
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return strLocation;
+        return currentLocation;
     }
 
     private final LocationListener locationListener = new LocationListener() {
@@ -96,6 +101,7 @@ public class LocationHelper {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (!addresses.isEmpty()) {
                 Address address = addresses.get(0);
+                this.address = address;
                 stringBuilder.append(address.getCountryName()).append(", ").append(address.getAdminArea()).append(", ").append(address.getLocality());
             }
         } catch (IOException e) {

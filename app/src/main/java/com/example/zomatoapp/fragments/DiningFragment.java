@@ -13,9 +13,11 @@ import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
+import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.ui.CollectionListAdapter;
 import com.example.zomatoapp.ui.RestaurantListAdapter;
 import com.example.zomatoapp.viewModel.CollectionItemViewModel;
+import com.example.zomatoapp.viewModel.DiningViewModel;
 import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +38,7 @@ public class DiningFragment extends Fragment {
     private static final String TAG = DiningFragment.class.getName();
 
     private FragmentDiningLayoutBinding mBinding;
+    private DiningViewModel mViewModel;
 
     private Context context;
     private RecyclerView rvCollectionsView;
@@ -73,6 +76,10 @@ public class DiningFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dining_layout, container, false);
+        mViewModel = new DiningViewModel();
+
+        mBinding.setViewModel(mViewModel);
+
         context = getActivity();
         initView();
         EventBus.getDefault().register(this);
@@ -91,6 +98,8 @@ public class DiningFragment extends Fragment {
 
         rvRestaurantListView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         rvRestaurantListView.setAdapter(restaurantListAdapter);
+
+        mViewModel.cityName.set(LocationHelper.getInstance().getAddress().getLocality());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
