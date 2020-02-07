@@ -1,15 +1,21 @@
 package com.example.zomatoapp.activities;
 
+import android.Manifest;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.databinding.ActivityHomeBinding;
 import com.example.zomatoapp.fragments.DiningFragment;
 import com.example.zomatoapp.fragments.NightLifeFragment;
 import com.example.zomatoapp.fragments.ProfileFragment;
+import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.viewModel.HomeViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +27,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+import io.reactivex.disposables.Disposable;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -34,6 +41,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private List<String> labels = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     private static final String LABEL_DINING = "Dining";
     private static final String LABEL_NIGHT_LEFT = "Nightlife";
@@ -50,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {
 
         mViewModel.retrieveCollections();
         mViewModel.getSearchResult();
+
+        fetchLocation();
     }
 
     private void initView() {
@@ -91,5 +103,16 @@ public class HomeActivity extends AppCompatActivity {
         labels.add(LABEL_PROFILE);
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> tab.setText(labels.get(position))).attach();
+    }
+
+    private void fetchLocation() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+                        String location = LocationHelper.getInstance().getLocations(HomeActivity.this);
+                        Log.d(TAG, "fetchLocation: location = " + location);
+                    }
+                });
     }
 }
