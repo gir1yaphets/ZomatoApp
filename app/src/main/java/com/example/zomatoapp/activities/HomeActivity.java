@@ -66,7 +66,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         EventBus.getDefault().register(this);
 
         fetchLocation();
-        mViewModel.getCityInfo();
     }
 
     private void initView() {
@@ -120,6 +119,8 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
                     if (granted) {
                         Location location = LocationHelper.getInstance().getLocation(HomeActivity.this);
                         Log.d(TAG, "fetchLocation: lat = " + location.getLatitude() + " lon = " + location.getLongitude());
+
+                        mViewModel.getCityInfo();
                     }
                 });
     }

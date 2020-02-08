@@ -83,6 +83,9 @@ public class DiningFragment extends Fragment {
         context = getActivity();
         initView();
         EventBus.getDefault().register(this);
+
+        LocationHelper.getInstance().registerLocationListener(location ->
+                mViewModel.cityName.set(LocationHelper.getInstance().getAddress().getLocality()));
         return mBinding.getRoot();
     }
 
@@ -98,8 +101,6 @@ public class DiningFragment extends Fragment {
 
         rvRestaurantListView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         rvRestaurantListView.setAdapter(restaurantListAdapter);
-
-        mViewModel.cityName.set(LocationHelper.getInstance().getAddress().getLocality());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

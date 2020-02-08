@@ -14,12 +14,17 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class LocationHelper {
+    private static final String TAG = LocationHelper.class.getName();
+
     private LocationManager locationManager;
     private static LocationHelper locationHelper;
+
+    private List<OnLocationChangedListener> listeners = new ArrayList<>();
 
     private Address address;
     private Location currentLocation = new Location("0.0");
@@ -65,6 +70,10 @@ public class LocationHelper {
             String address = convertAddress(context, currentLocation.getLatitude(), currentLocation.getLongitude());
             Log.d("", "getLocation: address = " + address);
 
+            for (OnLocationChangedListener l : listeners) {
+                l.onLocationUpdate(currentLocation);
+            }
+
             if (currentLocation != null) {
                 strLocation = df.format(currentLocation.getLatitude()) + "," + df.format(currentLocation.getLongitude());
             }
@@ -79,7 +88,7 @@ public class LocationHelper {
 
     private final LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-
+            Log.d(TAG, "onLocationChanged: ");
         }
 
         public void onProviderDisabled(String provider) {
@@ -120,5 +129,21 @@ public class LocationHelper {
     private enum PERMISSION {
         ACCESS_COARSE_LOCATION,
         ACCESS_FINE_LOCATION
+    }
+
+    public interface OnLocationChangedListener {
+        void onLocationUpdate(Location location);
+    }
+
+    public void registerLocationListener(OnLocationChangedListener l) {
+        listeners.add(l);
+    }
+
+    public void removeLocationListener(OnLocationChangedListener l) {
+        if (!listeners.contains(l)) {
+            return;
+        }
+
+        listeners.remove(l);
     }
 }
