@@ -84,8 +84,7 @@ public class DiningFragment extends Fragment {
         initView();
         EventBus.getDefault().register(this);
 
-        LocationHelper.getInstance().registerLocationListener(location ->
-                mViewModel.cityName.set(LocationHelper.getInstance().getAddress().getLocality()));
+        LocationHelper.getInstance().getRxLocation(context, (location, address) -> mViewModel.cityName.set(address.getLocality()));
         return mBinding.getRoot();
     }
 

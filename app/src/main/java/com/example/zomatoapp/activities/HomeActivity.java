@@ -1,10 +1,8 @@
 package com.example.zomatoapp.activities;
 
 import android.Manifest;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.CityModel;
@@ -117,10 +115,7 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .subscribe(granted -> {
                     if (granted) {
-                        Location location = LocationHelper.getInstance().getLocation(HomeActivity.this);
-                        Log.d(TAG, "fetchLocation: lat = " + location.getLatitude() + " lon = " + location.getLongitude());
-
-                        mViewModel.getCityInfo();
+                        LocationHelper.getInstance().getRxLocation(HomeActivity.this, (location, address) -> mViewModel.getCityInfo());
                     }
                 });
     }
