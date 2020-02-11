@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.zomatoapp.viewModel.DiningViewModel" />
+    </data>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,16 +22,36 @@
                 android:layout_height="match_parent">
 
                 <RelativeLayout
-                    android:id="@+id/rlTitleContainer"
+                    android:id="@+id/rlLocationBar"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="60dp">
+                    android:minHeight="30dp">
+
+                    <TextView
+                        android:id="@+id/tvCity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:textSize="20sp"
+                        android:text="@{viewModel.cityName}"
+                        android:onClick="@{viewModel::onClick}"
+                        tools:text="Irvine"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlTitleContainer"
+                    android:layout_below="@id/rlLocationBar"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp">
 
                     <TextView
                         android:id="@+id/tvCollectionTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
                         android:textSize="18sp"
                         android:text="COLLECTIONS"/>
 
@@ -33,6 +60,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
                         android:textSize="15sp"
                         android:textColor="@color/Red"
                         android:text="See all"/>
@@ -40,7 +68,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvCollectionList"
-                    android:layout_marginTop="50dp"
+                    android:layout_below="@id/rlTitleContainer"
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 

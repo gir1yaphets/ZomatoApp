@@ -13,9 +13,11 @@ import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
+import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.ui.CollectionListAdapter;
 import com.example.zomatoapp.ui.RestaurantListAdapter;
 import com.example.zomatoapp.viewModel.CollectionItemViewModel;
+import com.example.zomatoapp.viewModel.DiningViewModel;
 import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,10 +34,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DiningFragment extends Fragment {
+public class DiningFragment extends Fragment implements RestaurantItemViewModel.OnRestaurantSelectListener {
     private static final String TAG = DiningFragment.class.getName();
 
     private FragmentDiningLayoutBinding mBinding;
+    private DiningViewModel mViewModel;
 
     private Context context;
     private RecyclerView rvCollectionsView;
@@ -72,10 +75,17 @@ public class DiningFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dining_layout, container, false);
         context = getActivity();
+
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dining_layout, container, false);
+        mViewModel = new DiningViewModel(context);
+
+        mBinding.setViewModel(mViewModel);
+
         initView();
         EventBus.getDefault().register(this);
+
+        LocationHelper.getInstance().getRxLocation(context, (location, address) -> mViewModel.cityName.set(address.getLocality()));
         return mBinding.getRoot();
     }
 
@@ -106,7 +116,6 @@ public class DiningFragment extends Fragment {
         }
 
         collectionAdapter.setData(collectionData);
-        collectionAdapter.notifyDataSetChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -115,17 +124,25 @@ public class DiningFragment extends Fragment {
         for (SearchModel.RestaurantsBean restaurantsBean : restaurantModel.getRestaurants()) {
             SearchModel.RestaurantsBean.RestaurantBean restaurantBean = restaurantsBean.getRestaurant();
             RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
+            viewModel.setId(restaurantBean.getId());
             viewModel.name.set(restaurantBean.getName());
             viewModel.description.set(restaurantBean.getCuisines());
             viewModel.status.set(restaurantBean.getTimings());
-            viewModel.location.set(restaurantBean.getLocation().getAddress());
+            viewModel.location.set(restaurantBean.getLocation().getCity());
             viewModel.imageUrl.set(restaurantBean.getThumb());
             viewModel.rating.set(restaurantBean.getUser_rating().getAggregate_rating());
-//            viewModel.price.set(restaurantBean.getPrice_range());
+            viewModel.setListener(this);
+            int priceForTwo = restaurantBean.getAverage_cost_for_two();
+            String priceText = "$" + priceForTwo + " for two people(approx.)";
+            viewModel.price.set(priceText);
             restaurantData.add(viewModel);
         }
 
         restaurantListAdapter.setData(restaurantData);
-        restaurantListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRestaurantSelect(int id) {
+        mViewModel.retrieveRestaurantInfo(id);
     }
 }

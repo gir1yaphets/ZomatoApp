@@ -9,8 +9,13 @@ public class StaticValues {
 
     public static final String USER_KEY = "user-key";
 
+    public static class LocationKey {
+        public static final String LAT_KEY = "lat";
+
+        public static final String LON_KEY = "lon";
+    }
+
     public static class SearchApiKey {
-        public static final String USER_KEY = "user-key";
 
         public static final String ENTITY_ID_KEY = "entity_id";
 
@@ -21,10 +26,6 @@ public class StaticValues {
         public static final String START_KEY = "start";
 
         public static final String COUNT_KEY = "count";
-
-        public static final String LAT_KEY = "lat";
-
-        public static final String LON_KEY = "lon";
 
         public static final String RADIUS_KEY = "radius";
 
@@ -39,5 +40,13 @@ public class StaticValues {
         public static final String SORT_KEY = "sort";
 
         public static final String ORDER_KEY = "order";
+    }
+
+    public static class CityApiKey {
+        public static final String COUNT_KEY = "count";
+
+        public static final String Q_KEY = "q";
+
+        public static final String CITY_IDS_KEY = "city_ids";
     }
 }

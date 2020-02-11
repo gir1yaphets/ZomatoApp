@@ -1,15 +1,25 @@
 package com.example.zomatoapp.activities;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.example.zomatoapp.R;
+import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.databinding.ActivityHomeBinding;
+import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.fragments.DiningFragment;
 import com.example.zomatoapp.fragments.NightLifeFragment;
 import com.example.zomatoapp.fragments.ProfileFragment;
+import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.viewModel.HomeViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +29,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
+import io.reactivex.disposables.Disposable;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = HomeActivity.class.getName();
     private ActivityHomeBinding mBinding;
     private HomeViewModel mViewModel;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private NestedScrollView scrollView;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
@@ -48,11 +61,15 @@ public class HomeActivity extends AppCompatActivity {
 
         initView();
 
-        mViewModel.retrieveCollections();
-        mViewModel.getSearchResult();
+        EventBus.getDefault().register(this);
+
+        fetchLocation();
     }
 
     private void initView() {
+        swipeRefreshLayout = mBinding.sflRefreshContainer;
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         scrollView = mBinding.nsvScrollView;
         viewPager = mBinding.vpFragmentViewPager;
         tabLayout = mBinding.tlTabLayout;
@@ -91,5 +108,31 @@ public class HomeActivity extends AppCompatActivity {
         labels.add(LABEL_PROFILE);
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> tab.setText(labels.get(position))).attach();
+    }
+
+    private void fetchLocation() {
+        RxPermissions rxPermissions = new RxPermissions(this);
+        Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+                        LocationHelper.getInstance().getRxLocation(HomeActivity.this, (location, address) -> mViewModel.getCityInfo());
+                    }
+                });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCitySuccessEvent(OnCitySuccessEvent event) {
+        CityModel cityModel = event.getCityModel();
+
+        int cityId = cityModel.getLocation_suggestions().get(0).getId();
+
+        mViewModel.retrieveCollections(cityId);
+        mViewModel.getSearchResult(cityId, LocationHelper.getInstance().getCurrentLocation());
+    }
+
+    @Override
+    public void onRefresh() {
+        //Todo: dummy process
+        new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 2000);
     }
 }
