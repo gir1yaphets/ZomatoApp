@@ -34,7 +34,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DiningFragment extends Fragment {
+public class DiningFragment extends Fragment implements RestaurantItemViewModel.OnRestaurantSelectListener {
     private static final String TAG = DiningFragment.class.getName();
 
     private FragmentDiningLayoutBinding mBinding;
@@ -75,12 +75,13 @@ public class DiningFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        context = getActivity();
+
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dining_layout, container, false);
-        mViewModel = new DiningViewModel();
+        mViewModel = new DiningViewModel(context);
 
         mBinding.setViewModel(mViewModel);
 
-        context = getActivity();
         initView();
         EventBus.getDefault().register(this);
 
@@ -123,12 +124,14 @@ public class DiningFragment extends Fragment {
         for (SearchModel.RestaurantsBean restaurantsBean : restaurantModel.getRestaurants()) {
             SearchModel.RestaurantsBean.RestaurantBean restaurantBean = restaurantsBean.getRestaurant();
             RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
+            viewModel.setId(restaurantBean.getId());
             viewModel.name.set(restaurantBean.getName());
             viewModel.description.set(restaurantBean.getCuisines());
             viewModel.status.set(restaurantBean.getTimings());
             viewModel.location.set(restaurantBean.getLocation().getCity());
             viewModel.imageUrl.set(restaurantBean.getThumb());
             viewModel.rating.set(restaurantBean.getUser_rating().getAggregate_rating());
+            viewModel.setListener(this);
             int priceForTwo = restaurantBean.getAverage_cost_for_two();
             String priceText = "$" + priceForTwo + " for two people(approx.)";
             viewModel.price.set(priceText);
@@ -136,5 +139,10 @@ public class DiningFragment extends Fragment {
         }
 
         restaurantListAdapter.setData(restaurantData);
+    }
+
+    @Override
+    public void onRestaurantSelect(int id) {
+        mViewModel.retrieveRestaurantInfo(id);
     }
 }

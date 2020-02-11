@@ -60,7 +60,7 @@ public class ZomatoDataHelper {
                 }), cityId);
     }
 
-    public void retrieveRestaurant(){
+    public void retrieveRestaurant(int id){
         apiService.retrieveRestaurant(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<RestaurantModel>() {
                     @Override
@@ -83,7 +83,7 @@ public class ZomatoDataHelper {
                     public void onTechIssueError(Throwable t) {
 
                     }
-                }));
+                }), id);
     }
 
     public void getSearchResult(int cityId, Location location) {

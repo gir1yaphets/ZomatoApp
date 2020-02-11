@@ -49,10 +49,10 @@ public class ApiService {
         commonCall.enqueue(callback);
     }
 
-    public void retrieveRestaurant(RetrofitApiCallback<RestaurantModel> callback) {
+    public void retrieveRestaurant(RetrofitApiCallback<RestaurantModel> callback, int id) {
         Call restaurantCall = HttpUtils.getApiGatewayRetrofit().create(RestaurantApi.class).getRestaurant(
                 StaticValues.API_VERSION,
-                16774318
+                id
         );
 
         restaurantCall.enqueue(callback);

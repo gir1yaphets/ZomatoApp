@@ -19,10 +19,6 @@ public class HomeViewModel {
         zomatoDataHelper.retrieveCollection(cityId);
     }
 
-    public void retrieveRestaurants() {
-        zomatoDataHelper.retrieveRestaurant();
-    }
-
     public void getCityInfo() {
         zomatoDataHelper.getCityInfo(LocationHelper.getInstance().getCurrentLocation());
     }
