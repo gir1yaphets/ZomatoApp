@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.CollectionListModel;
+import com.example.zomatoapp.dataModel.RestaurantModel;
+import com.example.zomatoapp.dataModel.RestaurantsModel;
 import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
@@ -111,7 +113,7 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
 
             CollectionItemViewModel viewModel = new CollectionItemViewModel();
             viewModel.collectionTitle.set(collectionModel.getCollection().getTitle());
-            viewModel.imageUrl.set(collectionModel.getCollection().getImage_url());
+            viewModel.imageUrl.set(collectionModel.getCollection().getImageUrl());
             collectionData.add(viewModel);
         }
 
@@ -120,19 +122,19 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRestaurantSearchSuccessEvent(OnSearchSuccessEvent event) {
-        SearchModel restaurantModel = event.getSearchModel();
-        for (SearchModel.RestaurantsBean restaurantsBean : restaurantModel.getRestaurants()) {
-            SearchModel.RestaurantsBean.RestaurantBean restaurantBean = restaurantsBean.getRestaurant();
+        SearchModel searchModel = event.getSearchModel();
+        for (RestaurantsModel restaurantsModel : searchModel.getRestaurants()) {
+            RestaurantModel restaurantModel = restaurantsModel.getRestaurant();
             RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
-            viewModel.setId(restaurantBean.getId());
-            viewModel.name.set(restaurantBean.getName());
-            viewModel.description.set(restaurantBean.getCuisines());
-            viewModel.status.set(restaurantBean.getTimings());
-            viewModel.location.set(restaurantBean.getLocation().getCity());
-            viewModel.imageUrl.set(restaurantBean.getThumb());
-            viewModel.rating.set(restaurantBean.getUser_rating().getAggregate_rating());
+            viewModel.setId(Integer.parseInt(restaurantModel.getId()));
+            viewModel.name.set(restaurantModel.getName());
+            viewModel.description.set(restaurantModel.getCuisines());
+            viewModel.status.set(restaurantModel.getTimings());
+            viewModel.location.set(restaurantModel.getLocation().getCity());
+            viewModel.imageUrl.set(restaurantModel.getThumb());
+            viewModel.rating.set(restaurantModel.getUserRating().getAggregateRating());
             viewModel.setListener(this);
-            int priceForTwo = restaurantBean.getAverage_cost_for_two();
+            int priceForTwo = restaurantModel.getAverageCostForTwo();
             String priceText = "$" + priceForTwo + " for two people(approx.)";
             viewModel.price.set(priceText);
             restaurantData.add(viewModel);
