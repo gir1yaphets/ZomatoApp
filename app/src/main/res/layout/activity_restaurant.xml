@@ -56,7 +56,8 @@
                 android:layout_height="match_parent">
 
                 <include
-                    layout="@layout/layout_rest_title" />
+                    layout="@layout/layout_rest_title"
+                    bind:titleViewModel="@{viewModel.titleViewModel}"/>
 
                 <include
                     layout="@layout/layout_rest_address"

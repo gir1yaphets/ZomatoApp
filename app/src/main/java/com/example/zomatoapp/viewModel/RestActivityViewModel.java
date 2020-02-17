@@ -4,6 +4,7 @@ import android.app.Application;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.zomatoapp.dataModel.LocationModel;
 import com.example.zomatoapp.helper.ZomatoDataHelper;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,8 @@ public class RestActivityViewModel extends AndroidViewModel {
     private ZomatoDataHelper zomatoDataHelper;
 
     public MutableLiveData<String> restImageUrl = new MutableLiveData<>();
-    public MutableLiveData<String> addressImageUrl = new MutableLiveData<>();
+    public MutableLiveData<LocationModel> location = new MutableLiveData<>();
+    public RestTitleViewModel titleViewModel;
 
     public RestActivityViewModel(@NonNull Application application) {
         super(application);
@@ -28,13 +30,6 @@ public class RestActivityViewModel extends AndroidViewModel {
 
     @BindingAdapter({"restImageUrl"})
     public static void loadRestImage(ImageView imageView, String url) {
-        Glide.with(imageView.getContext())
-                .load(url)
-                .into(imageView);
-    }
-
-    @BindingAdapter({"addressImageUrl"})
-    public static void loadAddressImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
                 .into(imageView);
