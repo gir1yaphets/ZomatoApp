@@ -50,4 +50,5 @@ dependencies {
     implementation 'pl.charmas.android:android-reactive-location2:2.1@aar'
     implementation 'com.google.android.gms:play-services-location:11.0.4' //you can use newer GMS version if you need
     implementation 'com.google.android.gms:play-services-places:11.0.4'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 }

@@ -1,6 +1,7 @@
 package com.example.zomatoapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zomatoapp.R;
+import com.example.zomatoapp.activities.RestaurantActivity;
 import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.dataModel.RestaurantsModel;
@@ -18,6 +20,7 @@ import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
 import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.ui.CollectionListAdapter;
 import com.example.zomatoapp.ui.RestaurantListAdapter;
+import com.example.zomatoapp.utils.StaticValues;
 import com.example.zomatoapp.viewModel.CollectionItemViewModel;
 import com.example.zomatoapp.viewModel.DiningViewModel;
 import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
@@ -145,6 +148,9 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
 
     @Override
     public void onRestaurantSelect(int id) {
-        mViewModel.retrieveRestaurantInfo(id);
+//        mViewModel.retrieveRestaurantInfo(id);
+        Intent intent = new Intent(context, RestaurantActivity.class);
+        intent.putExtra(StaticValues.EXTRA_REST_ID, id);
+        startActivity(intent);
     }
 }
