@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onCitySuccessEvent(OnCitySuccessEvent event) {
         CityModel cityModel = event.getCityModel();
 
-        int cityId = cityModel.getLocation_suggestions().get(0).getId();
+        int cityId = cityModel.getLocationSuggestions().get(0).getId();
 
         mViewModel.retrieveCollections(cityId);
         mViewModel.getSearchResult(cityId, LocationHelper.getInstance().getCurrentLocation());

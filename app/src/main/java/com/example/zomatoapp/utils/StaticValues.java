@@ -9,6 +9,8 @@ public class StaticValues {
 
     public static final String USER_KEY = "user-key";
 
+    public static final String EXTRA_REST_ID = "EXTRA_REST_ID";
+
     public static class LocationKey {
         public static final String LAT_KEY = "lat";
 

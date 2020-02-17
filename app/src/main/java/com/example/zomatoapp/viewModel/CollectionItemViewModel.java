@@ -16,7 +16,6 @@ public class CollectionItemViewModel {
     public static void loadImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
-//                .placeholder(holderDrawable)
                 .into(imageView);
     }
 }
