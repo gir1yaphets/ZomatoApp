@@ -31,7 +31,7 @@
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
                     android:scaleType="fitXY"
-                    app:restImageUrl="@{viewModel.imageUrl}"
+                    app:restImageUrl="@{viewModel.restImageUrl}"
                     app:layout_collapseMode="parallax"
                     app:layout_collapseParallaxMultiplier="0.7"/>
 
@@ -57,9 +57,6 @@
 
                 <include
                     layout="@layout/layout_rest_title" />
-
-                <include
-                    layout="@layout/layout_rest_rating"/>
 
                 <include
                     layout="@layout/layout_rest_address"
