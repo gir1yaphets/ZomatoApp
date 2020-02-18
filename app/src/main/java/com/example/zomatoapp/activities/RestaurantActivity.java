@@ -8,6 +8,7 @@ import com.example.zomatoapp.databinding.ActivityRestaurantBinding;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.utils.StaticValues;
 import com.example.zomatoapp.viewModel.RestActivityViewModel;
+import com.example.zomatoapp.viewModel.RestMenuViewModel;
 import com.example.zomatoapp.viewModel.RestTitleViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,8 +40,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_restaurant);
-        mViewModel = new ViewModelProvider(this).get(RestActivityViewModel.class);
-        mViewModel.titleViewModel = new ViewModelProvider(this).get(RestTitleViewModel.class);
+        initViewModel();
 
         mBinding.setViewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
@@ -52,19 +52,32 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
     }
 
+    private void initViewModel() {
+        mViewModel = new ViewModelProvider(this).get(RestActivityViewModel.class);
+        mViewModel.titleViewModel = new ViewModelProvider(this).get(RestTitleViewModel.class);
+        mViewModel.menuViewModel = new ViewModelProvider(this).get(RestMenuViewModel.class);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnRestaurantsSuccessEvent(OnRestaurantsSuccessEvent event) {
         RestaurantModel restaurantModel = event.getRestaurantModel();
         mViewModel.restImageUrl.setValue(restaurantModel.getFeaturedImage());
         mViewModel.location.setValue(restaurantModel.getLocation());
+
+        //Update restaurant title
+        updateRestTitle(restaurantModel);
+
+        mapFragment.getMapAsync(this);
+    }
+
+    private void updateRestTitle(RestaurantModel restaurantModel) {
         mViewModel.titleViewModel.restName.setValue(restaurantModel.getName());
         mViewModel.titleViewModel.restDescrip.setValue(restaurantModel.getCuisines());
         mViewModel.titleViewModel.restAddress.setValue(restaurantModel.getLocation().getCity());
         mViewModel.titleViewModel.restRating.setValue(restaurantModel.getUserRating().getAggregateRating());
         mViewModel.titleViewModel.restReviewCount.setValue(restaurantModel.getAllReviewsCount() + " reviews");
-
-        mapFragment.getMapAsync(this);
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
