@@ -68,6 +68,11 @@
                     layout="@layout/layout_rest_menu" />
 
                 <include
+                    android:id="@+id/llDetailLayout"
+                    layout="@layout/layout_rest_detail"
+                    bind:detailViewModel="@{viewModel.detailViewModel}"/>
+
+                <include
                     layout="@layout/layout_rest_review" />
 
             </LinearLayout>

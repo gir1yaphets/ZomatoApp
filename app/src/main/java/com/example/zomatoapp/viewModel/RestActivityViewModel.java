@@ -19,6 +19,7 @@ public class RestActivityViewModel extends AndroidViewModel {
     public MutableLiveData<LocationModel> location = new MutableLiveData<>();
     public RestTitleViewModel titleViewModel;
     public RestMenuViewModel menuViewModel;
+    public RestDetailViewModel detailViewModel;
 
     public RestActivityViewModel(@NonNull Application application) {
         super(application);
