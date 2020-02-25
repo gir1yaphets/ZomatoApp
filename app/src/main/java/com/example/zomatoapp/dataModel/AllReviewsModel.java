@@ -18,13 +18,13 @@ public class AllReviewsModel {
 
     public static class ReviewsModel {
         @SerializedName("review")
-        private List<?> review;
+        private List<String> review;
 
-        public List<?> getReview() {
+        public List<String> getReview() {
             return review;
         }
 
-        public void setReview(List<?> review) {
+        public void setReview(List<String> review) {
             this.review = review;
         }
     }

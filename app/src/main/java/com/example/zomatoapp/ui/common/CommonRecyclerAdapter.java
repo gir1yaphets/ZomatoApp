@@ -66,6 +66,4 @@ public abstract class CommonRecyclerAdapter<VM> extends RecyclerView.Adapter<Com
     }
 
     protected abstract @LayoutRes int getLayoutResId();
-
-//    protected abstract void bind(VM vm);
 }

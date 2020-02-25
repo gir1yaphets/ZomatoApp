@@ -148,7 +148,6 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
 
     @Override
     public void onRestaurantSelect(int id) {
-//        mViewModel.retrieveRestaurantInfo(id);
         Intent intent = new Intent(context, RestaurantActivity.class);
         intent.putExtra(StaticValues.EXTRA_REST_ID, id);
         startActivity(intent);
