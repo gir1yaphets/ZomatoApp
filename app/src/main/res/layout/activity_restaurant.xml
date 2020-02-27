@@ -73,6 +73,10 @@
                     bind:detailViewModel="@{viewModel.detailViewModel}"/>
 
                 <include
+                    android:id="@+id/llRatingLayout"
+                    layout="@layout/layout_rest_rating" />
+
+                <include
                     layout="@layout/layout_rest_review" />
 
             </LinearLayout>
