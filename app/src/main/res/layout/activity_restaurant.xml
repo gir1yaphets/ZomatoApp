@@ -74,10 +74,13 @@
 
                 <include
                     android:id="@+id/llRatingLayout"
-                    layout="@layout/layout_rest_rating" />
+                    layout="@layout/layout_rest_rating"
+                    bind:ratingViewModel="@{viewModel.ratingViewModel}"/>
 
                 <include
-                    layout="@layout/layout_rest_review" />
+                    android:id="@+id/llReviewLayout"
+                    layout="@layout/layout_rest_review"
+                    bind:reviewViewModel="@{viewModel.reviewViewModel}"/>
 
             </LinearLayout>
 

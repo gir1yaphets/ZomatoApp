@@ -104,8 +104,8 @@ public class RestaurantModel {
     @SerializedName("phone_numbers")
     private String phoneNumbers;
 
-    @SerializedName("all_reviews")
-    private AllReviewsModel allReviews;
+//    @SerializedName("all_reviews")
+//    private AllReviewsModel allReviews;
 
     @SerializedName("highlights")
     private List<String> highlights;
@@ -381,14 +381,6 @@ public class RestaurantModel {
 
     public void setPhoneNumbers(String phoneNumbers) {
         this.phoneNumbers = phoneNumbers;
-    }
-
-    public AllReviewsModel getAllReviews() {
-        return allReviews;
-    }
-
-    public void setAllReviews(AllReviewsModel allReviews) {
-        this.allReviews = allReviews;
     }
 
     public List<String> getHighlights() {
