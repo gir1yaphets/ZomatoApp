@@ -11,6 +11,10 @@ public class StaticValues {
 
     public static final String EXTRA_REST_ID = "EXTRA_REST_ID";
 
+    public static final String EMAIL_DEEP_LINK = "https://www.example.zomatoapp/finishSignUp?cartId=1234";
+
+    public static final String PACKAGE_NAME = "com.example.zomatoapp";
+
     public static class LocationKey {
         public static final String LAT_KEY = "lat";
 

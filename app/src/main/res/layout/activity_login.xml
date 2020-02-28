@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.zomatoapp.viewModel.LoginViewModel" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:text="@={viewModel.email}"
+            android:layout_width="match_parent"
+            android:hint="Input Email"
+            android:layout_height="50dp"/>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:text="@={viewModel.password}"
+            android:layout_width="match_parent"
+            android:hint="Input Password"
+            android:inputType="textPassword"
+            android:layout_height="50dp"/>
+
+        <Button
+            android:id="@+id/btLogin"
+            android:text="Sign In"
+            android:onClick="@{viewModel::onSignIn}"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <Button
+            android:id="@+id/btSignUp"
+            android:text="Sign Up"
+            android:onClick="@{viewModel::onSignUp}"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+    </LinearLayout>
+
+</layout>
