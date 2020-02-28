@@ -30,13 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginStart="8dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
                 android:layout_toEndOf="@id/ivPhoto">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="30sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:text="@{viewModel.userName}"
                     tools:text="Brezzey"/>
@@ -44,7 +45,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
+                    android:textSize="14sp"
                     android:text="@{viewModel.reviewAndFollow}"
                     tools:text="1 Review | 1 Follower"/>
             </LinearLayout>
@@ -107,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@id/llRatingContainer"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:text="@{viewModel.comments}"
             tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
 
