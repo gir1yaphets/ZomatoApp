@@ -3,6 +3,7 @@ package com.example.zomatoapp.helper;
 import android.content.Context;
 import android.location.Location;
 
+import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
@@ -10,6 +11,7 @@ import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
+import com.example.zomatoapp.eventbus.OnReviewSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
@@ -60,7 +62,7 @@ public class ZomatoDataHelper {
                 }), cityId);
     }
 
-    public void retrieveRestaurant(int id){
+    public void retrieveRestaurant(int id) {
         apiService.retrieveRestaurant(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<RestaurantModel>() {
                     @Override
@@ -138,6 +140,32 @@ public class ZomatoDataHelper {
                 }), getCityInputParams(location));
     }
 
+    public void getReviews(int resId, int start, int end) {
+        apiService.getReviews(new RetrofitApiCallback<>(new RetrofitApiCallback.OnActionHandleListener<AllReviewsModel>() {
+                    @Override
+                    public void onBeforeHandling() {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Response<AllReviewsModel> response) {
+                        AllReviewsModel allReviewsModel = response.body();
+                        EventBus.getDefault().post(new OnReviewSuccessEvent(allReviewsModel));
+                    }
+
+                    @Override
+                    public void onError(RetrofitErrorModel errors) {
+
+                    }
+
+                    @Override
+                    public void onTechIssueError(Throwable t) {
+
+                    }
+                }),
+                resId, start, end);
+    }
+
     private Map<String, Object> getCityInputParams(Location location) {
         Map<String, Object> map = new HashMap<>();
         map.put(StaticValues.CityApiKey.Q_KEY, "");
@@ -148,7 +176,8 @@ public class ZomatoDataHelper {
         return map;
     }
 
-    private Map<String, Object> getSearchInputParams(int cityId, int start, int count, Location location) {
+    private Map<String, Object> getSearchInputParams(int cityId, int start, int count,
+                                                     Location location) {
         Map<String, Object> map = new HashMap<>();
         map.put(StaticValues.SearchApiKey.ENTITY_ID_KEY, cityId);
         map.put(StaticValues.SearchApiKey.ENTITY_TYPE_KEY, "city");

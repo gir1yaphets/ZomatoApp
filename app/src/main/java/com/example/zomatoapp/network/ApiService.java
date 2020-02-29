@@ -1,5 +1,6 @@
 package com.example.zomatoapp.network;
 
+import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.CategoryListModel;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
@@ -74,5 +75,16 @@ public class ApiService {
         );
 
         cityCall.enqueue(callback);
+    }
+
+    public void getReviews(RetrofitApiCallback<AllReviewsModel> callback, int resId, int start, int end) {
+        Call reviewsCall = HttpUtils.getApiGatewayRetrofit().create(CommonApi.class).getReviews(
+                StaticValues.API_VERSION,
+                resId,
+                start,
+                end
+        );
+
+        reviewsCall.enqueue(callback);
     }
 }

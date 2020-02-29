@@ -17,9 +17,12 @@ public class RestActivityViewModel extends AndroidViewModel {
 
     public MutableLiveData<String> restImageUrl = new MutableLiveData<>();
     public MutableLiveData<LocationModel> location = new MutableLiveData<>();
+
     public RestTitleViewModel titleViewModel;
     public RestMenuViewModel menuViewModel;
     public RestDetailViewModel detailViewModel;
+    public RestRatingViewModel ratingViewModel;
+    public RestReviewViewModel reviewViewModel;
 
     public RestActivityViewModel(@NonNull Application application) {
         super(application);
@@ -28,6 +31,10 @@ public class RestActivityViewModel extends AndroidViewModel {
 
     public void retrieveSpecRestaurantInfo(int id) {
         zomatoDataHelper.retrieveRestaurant(id);
+    }
+
+    public void fetchRestReviewInfo(int id, int start, int end) {
+        zomatoDataHelper.getReviews(id, start, end);
     }
 
     @BindingAdapter({"restImageUrl"})

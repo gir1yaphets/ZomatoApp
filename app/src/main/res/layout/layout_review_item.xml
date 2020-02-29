@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.zomatoapp.viewModel.ReviewItemViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:minHeight="200dp">
+
+        <RelativeLayout
+            android:id="@+id/rlTitleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <com.example.zomatoapp.ui.component.CircleImageView
+                android:id="@+id/ivPhoto"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:userPhotoUrl="@{viewModel.userPhotoUrl}"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@id/ivPhoto">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:text="@{viewModel.userName}"
+                    tools:text="Brezzey"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="@{viewModel.reviewAndFollow}"
+                    tools:text="1 Review | 1 Follower"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llRatingContainer"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/rlTitleContainer">
+
+            <TextView
+                android:background="@drawable/round_corner_rect"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                tools:text="1★"/>
+
+            <TextView
+                android:background="@drawable/round_corner_rect"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                tools:text="2★"/>
+
+            <TextView
+                android:background="@drawable/round_corner_rect"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                tools:text="3★"/>
+
+            <TextView
+                android:background="@drawable/round_corner_rect"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                tools:text="4★"/>
+
+            <TextView
+                android:background="@drawable/round_corner_rect"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                tools:text="5★"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/llRatingContainer"
+            android:textSize="14sp"
+            android:text="@{viewModel.comments}"
+            tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+
+        <View
+            android:layout_below="@id/tvComment"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:background="@color/Gray"
+            android:layout_height="1dp"/>
+
+    </RelativeLayout>
+
+</layout>

@@ -1,5 +1,6 @@
 package com.example.zomatoapp.retrofitInterface;
 
+import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.CategoryListModel;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
@@ -32,5 +33,13 @@ public interface CommonApi {
     Call<CityModel> getCities(
             @Path("apiVersion") String apiVersion,
             @QueryMap Map<String, Object> params
+    );
+
+    @GET("{apiVersion}/reviews")
+    Call<AllReviewsModel> getReviews(
+            @Path("apiVersion") String apiVersion,
+            @Query("res_id") int resId,
+            @Query("start") int start,
+            @Query("end") int end
     );
 }
