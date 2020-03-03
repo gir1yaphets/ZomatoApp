@@ -7,10 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.LayoutRes;
+import androidx.databinding.BindingMethod;
+import androidx.databinding.BindingMethods;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
 
+@BindingMethods({
+        @BindingMethod(type = RecyclerView.class, attribute = "android:adapter", method = "setAdapter"),
+})
 public abstract class CommonRecyclerAdapter<VM> extends RecyclerView.Adapter<CommonRecyclerHolder> {
     protected List<VM> data;
 

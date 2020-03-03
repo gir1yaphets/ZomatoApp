@@ -7,22 +7,16 @@ import android.util.Pair;
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
-import com.example.zomatoapp.dataModel.ReviewModel;
-import com.example.zomatoapp.dataModel.UserReviewsModel;
 import com.example.zomatoapp.databinding.ActivityRestaurantBinding;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnReviewSuccessEvent;
-import com.example.zomatoapp.ui.HighlightListAdapter;
-import com.example.zomatoapp.ui.ReviewListAdapter;
 import com.example.zomatoapp.utils.StaticValues;
-import com.example.zomatoapp.viewModel.HighlightItemViewModel;
 import com.example.zomatoapp.viewModel.RestActivityViewModel;
 import com.example.zomatoapp.viewModel.RestDetailViewModel;
 import com.example.zomatoapp.viewModel.RestMenuViewModel;
 import com.example.zomatoapp.viewModel.RestRatingViewModel;
 import com.example.zomatoapp.viewModel.RestReviewViewModel;
 import com.example.zomatoapp.viewModel.RestTitleViewModel;
-import com.example.zomatoapp.viewModel.ReviewItemViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -36,8 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import androidx.annotation.Nullable;
@@ -55,21 +47,19 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private SupportMapFragment mapFragment;
 
     private RecyclerView highlightRecyclerView;
-    private HighlightListAdapter highLightAdapter;
 
     private RatingReviews ratingReviews;
     private int[] raters = new int[5];
 
     private RecyclerView reviewRecyclerView;
-    private ReviewListAdapter reviewAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_restaurant);
-        initView();
         initViewModel();
+        initView();
 
         mBinding.setViewModel(mViewModel);
         mBinding.setLifecycleOwner(this);
@@ -85,13 +75,11 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     private void initView() {
         highlightRecyclerView = mBinding.llDetailLayout.rvHighlight;
         highlightRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        highLightAdapter = new HighlightListAdapter(new ArrayList<>());
-        highlightRecyclerView.setAdapter(highLightAdapter);
+        highlightRecyclerView.setAdapter(mViewModel.detailViewModel.getHighLightAdapter());
 
         reviewRecyclerView = mBinding.llReviewLayout.rvReviewList;
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        reviewAdapter = new ReviewListAdapter(new ArrayList<>());
-        reviewRecyclerView.setAdapter(reviewAdapter);
+        reviewRecyclerView.setAdapter(mViewModel.reviewViewModel.getReviewAdapter());
 
         configureRating();
     }
@@ -127,71 +115,15 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnRestaurantsSuccessEvent(OnRestaurantsSuccessEvent event) {
         RestaurantModel restaurantModel = event.getRestaurantModel();
-        mViewModel.restImageUrl.setValue(restaurantModel.getFeaturedImage());
-        mViewModel.location.setValue(restaurantModel.getLocation());
 
-        //Update restaurant title
-        updateRestTitle(restaurantModel);
-
-        //Update restaurant detail
-        updateRestDetail(restaurantModel);
-
-        //Update restaurant ratings
-        updateRestRatings(restaurantModel);
-
+        mViewModel.updateRestaurantInfo(restaurantModel);
         mapFragment.getMapAsync(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReviewSuccessEvent(OnReviewSuccessEvent event) {
         AllReviewsModel allReviewsModel = event.getAllReviewsModel();
-        updateRestReviews(allReviewsModel);
-    }
-
-    private void updateRestTitle(RestaurantModel restaurantModel) {
-        mViewModel.titleViewModel.restName.setValue(restaurantModel.getName());
-        mViewModel.titleViewModel.restDescrip.setValue(restaurantModel.getCuisines());
-        mViewModel.titleViewModel.restAddress.setValue(restaurantModel.getLocation().getCity());
-        mViewModel.titleViewModel.restRating.setValue(restaurantModel.getUserRating().getAggregateRating());
-        mViewModel.titleViewModel.restReviewCount.setValue(restaurantModel.getAllReviewsCount() + " reviews");
-    }
-
-    private void updateRestDetail(RestaurantModel restaurantModel) {
-        mViewModel.detailViewModel.cuisines.setValue(restaurantModel.getCuisines());
-        mViewModel.detailViewModel.averageCost.setValue(restaurantModel.getAverageCostForTwo() + "$ for two people");
-
-        for (String highlightInfo : restaurantModel.getHighlights()) {
-            HighlightItemViewModel itemViewModel = new HighlightItemViewModel();
-            itemViewModel.highlightName.setValue(highlightInfo);
-            mViewModel.detailViewModel.addHighlightItem(itemViewModel);
-        }
-
-        List<HighlightItemViewModel> list =  mViewModel.detailViewModel.getHighlightItemViewModels();
-        highLightAdapter.setData(list);
-    }
-
-    private void updateRestRatings(RestaurantModel restaurantModel) {
-        mViewModel.ratingViewModel.score.setValue(restaurantModel.getUserRating().getAggregateRating());
-        String reviewCount = restaurantModel.getAllReviewsCount() + " reviews";
-        mViewModel.ratingViewModel.raters.setValue(reviewCount);
-    }
-
-    private void updateRestReviews(AllReviewsModel allReviewsModel) {
-        RestReviewViewModel restReviewViewModel = mViewModel.reviewViewModel;
-
-        for (UserReviewsModel userReviewsModel : allReviewsModel.getUserReviews()) {
-            ReviewModel review = userReviewsModel.getReview();
-
-            ReviewItemViewModel itemViewModel = new ReviewItemViewModel();
-            itemViewModel.userName.set(review.getUser().getName());
-            itemViewModel.userPhotoUrl.set(review.getUser().getProfileImage());
-            itemViewModel.reviewTime.set(review.getReviewTimeFriendly());
-            itemViewModel.comments.set(review.getReviewText());
-
-            restReviewViewModel.addReview(itemViewModel);
-        }
-
-        reviewAdapter.setData(restReviewViewModel.getReviewItemViewModels());
+        mViewModel.updateRestReviews(allReviewsModel);
     }
 
     @Override
