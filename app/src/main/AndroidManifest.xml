@@ -35,9 +35,7 @@
         </activity>
         <activity android:name=".activities.RestaurantActivity"/>
         <activity
-            android:name=".activities.CollectionActivity"
-            android:label="@string/title_activity_collection"
-            android:theme="@style/NoActionBar">
+            android:name=".activities.CollectionActivity">
 
         </activity>
         <activity android:name=".activities.LoginActivity" >
