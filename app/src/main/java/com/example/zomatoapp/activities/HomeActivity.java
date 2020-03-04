@@ -1,6 +1,7 @@
 package com.example.zomatoapp.activities;
 
 import android.Manifest;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -44,6 +45,11 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     private NestedScrollView scrollView;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
+
+
+
+    private int cityId;
+    private Location location;
 
     private List<String> labels = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
@@ -124,10 +130,12 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     public void onCitySuccessEvent(OnCitySuccessEvent event) {
         CityModel cityModel = event.getCityModel();
 
-        int cityId = cityModel.getLocationSuggestions().get(0).getId();
+        cityId = cityModel.getLocationSuggestions().get(0).getId();
+        location = LocationHelper.getInstance().getCurrentLocation();
+        int collectionId = 1;
 
         mViewModel.retrieveCollections(cityId);
-        mViewModel.getSearchResult(cityId, LocationHelper.getInstance().getCurrentLocation());
+        mViewModel.getSearchResult(cityId, collectionId, location);
     }
 
     @Override

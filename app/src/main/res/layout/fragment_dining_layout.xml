@@ -33,10 +33,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
-                        android:textSize="20sp"
                         android:text="@{viewModel.cityName}"
-                        android:onClick="@{viewModel::onClick}"
-                        tools:text="Irvine"/>
+                        android:textSize="20sp"
+                        tools:text="Irvine" />
                 </RelativeLayout>
 
                 <RelativeLayout

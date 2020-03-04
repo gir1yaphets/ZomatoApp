@@ -88,7 +88,7 @@ public class ZomatoDataHelper {
                 }), id);
     }
 
-    public void getSearchResult(int cityId, Location location) {
+    public void getSearchResult(int cityId, int collectionId, Location location) {
         apiService.retrieveSearchResult(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<SearchModel>() {
                     @Override
@@ -111,7 +111,7 @@ public class ZomatoDataHelper {
                     public void onTechIssueError(Throwable t) {
 
                     }
-                }), getSearchInputParams(cityId, 0, 5, location));
+                }), getSearchInputParams(cityId, 0, 5, collectionId, location));
     }
 
     public void getCityInfo(Location location) {
@@ -176,7 +176,7 @@ public class ZomatoDataHelper {
         return map;
     }
 
-    private Map<String, Object> getSearchInputParams(int cityId, int start, int count,
+    private Map<String, Object> getSearchInputParams(int cityId, int start, int count, int collectionId,
                                                      Location location) {
         Map<String, Object> map = new HashMap<>();
         map.put(StaticValues.SearchApiKey.ENTITY_ID_KEY, cityId);
@@ -189,7 +189,7 @@ public class ZomatoDataHelper {
         map.put(StaticValues.SearchApiKey.RADIUS_KEY, 100000);
         map.put(StaticValues.SearchApiKey.CUISINES_KEY, "");
         map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
-        map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, 1);
+        map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
         map.put(StaticValues.SearchApiKey.CATEGORY_KEY, 3);
         map.put(StaticValues.SearchApiKey.SORT_KEY, "rating");
         map.put(StaticValues.SearchApiKey.ORDER_KEY, "desc");

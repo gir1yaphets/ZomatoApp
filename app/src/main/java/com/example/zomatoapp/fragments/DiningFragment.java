@@ -7,8 +7,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.zomatoapp.R;
+import com.example.zomatoapp.activities.CollectionActivity;
+import com.example.zomatoapp.activities.HomeActivity;
 import com.example.zomatoapp.activities.RestaurantActivity;
 import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
@@ -29,17 +32,19 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.adapters.ToolbarBindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DiningFragment extends Fragment implements RestaurantItemViewModel.OnRestaurantSelectListener {
+public class DiningFragment extends Fragment implements RestaurantItemViewModel.OnRestaurantSelectListener, CollectionItemViewModel.OnCollectionSelectListener{
     private static final String TAG = DiningFragment.class.getName();
 
     private FragmentDiningLayoutBinding mBinding;
@@ -117,6 +122,7 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
             CollectionItemViewModel viewModel = new CollectionItemViewModel();
             viewModel.collectionTitle.set(collectionModel.getCollection().getTitle());
             viewModel.imageUrl.set(collectionModel.getCollection().getImageUrl());
+            viewModel.setListener(this);
             collectionData.add(viewModel);
         }
 
@@ -148,8 +154,17 @@ public class DiningFragment extends Fragment implements RestaurantItemViewModel.
 
     @Override
     public void onRestaurantSelect(int id) {
+//        mViewModel.retrieveRestaurantInfo(id);
         Intent intent = new Intent(context, RestaurantActivity.class);
         intent.putExtra(StaticValues.EXTRA_REST_ID, id);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onCollectionSelect(int id) {
+        Intent intent = new Intent(context, CollectionActivity.class);
+        //id starts at 0, but collection id starts at 1
+        intent.putExtra(StaticValues.SearchApiKey.COLLECTION_ID_KEY, id+1);
         startActivity(intent);
     }
 }
