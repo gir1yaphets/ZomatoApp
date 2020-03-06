@@ -13,6 +13,7 @@ import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnReviewSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
+import com.example.zomatoapp.manager.ZomatoDataManager;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
 import com.example.zomatoapp.network.RetrofitErrorModel;
@@ -31,9 +32,13 @@ public class ZomatoDataHelper {
     private Context mContext;
     private ApiService apiService;
 
+    private ZomatoDataManager dataManager;
+
     public ZomatoDataHelper(Context context) {
         mContext = context;
         apiService = ApiService.getInstance();
+
+        dataManager = new ZomatoDataManager();
     }
 
     public void retrieveCollection(int cityId) {
@@ -99,6 +104,7 @@ public class ZomatoDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
+                        onSearchSuccess(searchModel);
                         EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel));
                     }
 
@@ -112,6 +118,10 @@ public class ZomatoDataHelper {
 
                     }
                 }), getSearchInputParams(cityId, 0, 5, collectionId, location));
+    }
+
+    private void onSearchSuccess(SearchModel searchModel) {
+
     }
 
     public void getCityInfo(Location location) {
