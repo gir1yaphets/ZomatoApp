@@ -2,10 +2,9 @@ package com.example.zomatoapp.dataModel.realmObject;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 public class DbRestaurantModel extends RealmObject {
-    @PrimaryKey
+//    @PrimaryKey
     private String id;
 
     private String name;

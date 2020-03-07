@@ -6,8 +6,10 @@ import android.location.Location;
 import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
+import com.example.zomatoapp.dataModel.RequestDataModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.dataModel.SearchModel;
+import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
@@ -18,6 +20,7 @@ import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
 import com.example.zomatoapp.network.RetrofitErrorModel;
 import com.example.zomatoapp.utils.StaticValues;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,7 +29,10 @@ import java.util.Map;
 
 import retrofit2.Response;
 
-public class ZomatoDataHelper {
+import static com.example.zomatoapp.dataModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS;
+import static com.example.zomatoapp.dataModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS;
+
+public class ZomatoDataHelper extends BaseDataHelper {
     private static final String TAG = ZomatoDataHelper.class.getName();
 
     private Context mContext;
@@ -93,7 +99,7 @@ public class ZomatoDataHelper {
                 }), id);
     }
 
-    public void getSearchResult(int cityId, int collectionId, Location location) {
+    public void getSearchResult(final int cityId, int collectionId, Location location) {
         apiService.retrieveSearchResult(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<SearchModel>() {
                     @Override
@@ -104,7 +110,7 @@ public class ZomatoDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
-                        onSearchSuccess(searchModel);
+                        onSearchSuccess(cityId, searchModel);
                         EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel));
                     }
 
@@ -120,8 +126,17 @@ public class ZomatoDataHelper {
                 }), getSearchInputParams(cityId, 0, 5, collectionId, location));
     }
 
-    private void onSearchSuccess(SearchModel searchModel) {
+    private void onSearchSuccess(int cityId, SearchModel searchModel) {
+        dataManager.updateData("", convertSearchData(cityId, searchModel));
+    }
 
+    private DbSearchModel convertSearchData(int cityId, SearchModel searchModel) {
+        Gson gson = new Gson();
+        String originalData = gson.toJson(searchModel);
+
+        DbSearchModel dbSearchModel = gson.fromJson(originalData, DbSearchModel.class);
+        dbSearchModel.setId(String.valueOf(cityId));
+        return dbSearchModel;
     }
 
     public void getCityInfo(Location location) {
@@ -205,5 +220,19 @@ public class ZomatoDataHelper {
         map.put(StaticValues.SearchApiKey.ORDER_KEY, "desc");
 
         return map;
+    }
+
+    @Override
+    public void retrieveCacheDataImpl(RequestDataModel requestDataModel) {
+
+    }
+
+    @Override
+    protected void retrieveDataImpl(RequestDataModel requestDataModel) {
+        switch (requestDataModel.getActionType()) {
+            case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
+            case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
+
+        }
     }
 }
