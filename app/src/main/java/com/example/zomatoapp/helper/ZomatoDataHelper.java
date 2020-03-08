@@ -6,10 +6,12 @@ import android.location.Location;
 import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
-import com.example.zomatoapp.dataModel.RequestDataModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
+import com.example.zomatoapp.dataModel.requestModel.CollectionRequestModel;
+import com.example.zomatoapp.dataModel.requestModel.RequestDataModel;
+import com.example.zomatoapp.dataModel.requestModel.SearchRequestModel;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
@@ -19,6 +21,7 @@ import com.example.zomatoapp.manager.ZomatoDataManager;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
 import com.example.zomatoapp.network.RetrofitErrorModel;
+import com.example.zomatoapp.utils.CommonUtil;
 import com.example.zomatoapp.utils.StaticValues;
 import com.google.gson.Gson;
 
@@ -29,16 +32,16 @@ import java.util.Map;
 
 import retrofit2.Response;
 
-import static com.example.zomatoapp.dataModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS;
-import static com.example.zomatoapp.dataModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS;
 
 public class ZomatoDataHelper extends BaseDataHelper {
     private static final String TAG = ZomatoDataHelper.class.getName();
 
     private Context mContext;
     private ApiService apiService;
-
-    private ZomatoDataManager dataManager;
 
     public ZomatoDataHelper(Context context) {
         mContext = context;
@@ -110,7 +113,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
-//                        onSearchSuccess(cityId, searchModel);
+                        onSearchSuccess(cityId, categoryId, searchModel);
 
                         EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel, categoryId));
                     }
@@ -127,16 +130,17 @@ public class ZomatoDataHelper extends BaseDataHelper {
                 }), getSearchInputParams(cityId, 0, 20, collectionId, categoryId, location));
     }
 
-    private void onSearchSuccess(int cityId, SearchModel searchModel) {
-        dataManager.updateData("", convertSearchData(cityId, searchModel));
+    private void onSearchSuccess(int cityId, int categoryId, SearchModel searchModel) {
+        dataManager.updateData("", convertSearchData(cityId, categoryId, searchModel));
     }
 
-    private DbSearchModel convertSearchData(int cityId, SearchModel searchModel) {
+    private DbSearchModel convertSearchData(int cityId, int categoryId, SearchModel searchModel) {
         Gson gson = new Gson();
         String originalData = gson.toJson(searchModel);
 
         DbSearchModel dbSearchModel = gson.fromJson(originalData, DbSearchModel.class);
-        dbSearchModel.setId(String.valueOf(cityId));
+        dbSearchModel.setCategoryId(categoryId);
+        dbSearchModel.setId(CommonUtil.getCompoundKey(mContext, cityId, categoryId));
         return dbSearchModel;
     }
 
@@ -214,7 +218,6 @@ public class ZomatoDataHelper extends BaseDataHelper {
         map.put(StaticValues.LocationKey.LON_KEY, location.getLongitude());
         map.put(StaticValues.SearchApiKey.RADIUS_KEY, 100000);
         map.put(StaticValues.SearchApiKey.CUISINES_KEY, "");
-//        map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
         if (collectionId != -1) {
             map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
         }
@@ -230,8 +233,8 @@ public class ZomatoDataHelper extends BaseDataHelper {
     }
 
     @Override
-    public void retrieveCacheDataImpl(RequestDataModel requestDataModel) {
-
+    public CachedData retrieveCacheDataImpl(RequestDataModel requestDataModel) {
+        return null;
     }
 
     @Override
@@ -239,7 +242,15 @@ public class ZomatoDataHelper extends BaseDataHelper {
         switch (requestDataModel.getActionType()) {
             case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
             case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
+                SearchRequestModel searchReqModel = (SearchRequestModel) requestDataModel;
+                getSearchResult(searchReqModel.getCityId(), searchReqModel.getCollectionId(), searchReqModel.getCategoryId(), searchReqModel.getLocation());
+                break;
 
+            case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:
+            case ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS:
+                CollectionRequestModel collectionRequestModel = (CollectionRequestModel) requestDataModel;
+                retrieveCollection(collectionRequestModel.getCityId());
+                break;
         }
     }
 }

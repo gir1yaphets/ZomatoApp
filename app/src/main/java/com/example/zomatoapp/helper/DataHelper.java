@@ -1,6 +1,6 @@
 package com.example.zomatoapp.helper;
 
-import com.example.zomatoapp.dataModel.RequestDataModel;
+import com.example.zomatoapp.dataModel.requestModel.RequestDataModel;
 
 public interface DataHelper {
     void retrieveData(RequestDataModel requestDataModel);

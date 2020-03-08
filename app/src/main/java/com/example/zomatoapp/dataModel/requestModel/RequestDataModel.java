@@ -1,4 +1,4 @@
-package com.example.zomatoapp.dataModel;
+package com.example.zomatoapp.dataModel.requestModel;
 
 public class RequestDataModel {
     public static final String ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS = "ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS";

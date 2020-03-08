@@ -4,7 +4,6 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class DbRestaurantModel extends RealmObject {
-//    @PrimaryKey
     private String id;
 
     private String name;
@@ -68,8 +67,6 @@ public class DbRestaurantModel extends RealmObject {
     private String phoneNumbers;
 
     private RealmList<String> highlights;
-
-    private RealmList<DbPhotosModel> photos;
 
     private RealmList<String> establishment;
 
@@ -327,14 +324,6 @@ public class DbRestaurantModel extends RealmObject {
 
     public void setHighlights(RealmList<String> highlights) {
         this.highlights = highlights;
-    }
-
-    public RealmList<DbPhotosModel> getPhotos() {
-        return photos;
-    }
-
-    public void setPhotos(RealmList<DbPhotosModel> photos) {
-        this.photos = photos;
     }
 
     public RealmList<String> getEstablishment() {

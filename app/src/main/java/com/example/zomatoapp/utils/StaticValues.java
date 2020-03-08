@@ -21,6 +21,17 @@ public class StaticValues {
 
     public static final String PACKAGE_NAME = "com.example.zomatoapp";
 
+    /**
+     * For SharedPreference Key
+     */
+    public static final String SHARE_PRE_KEY_UUID = "SHARE_PRE_KEY_UUID";
+
+    public static final String SHARE_PRE_KEY_LAST_TIMESTAMP = "SHARE_PRE_KEY_LAST_TIMESTAMP";
+
+
+    /**
+     * For api request
+     */
     public static class LocationKey {
         public static final String LAT_KEY = "lat";
 

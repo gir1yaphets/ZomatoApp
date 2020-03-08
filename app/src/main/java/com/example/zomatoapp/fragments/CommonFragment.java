@@ -205,4 +205,11 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
         mViewModel.retrieveCollections(cityId);
         mViewModel.getSearchResult(cityId, -1, categoryId, location);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
 }
