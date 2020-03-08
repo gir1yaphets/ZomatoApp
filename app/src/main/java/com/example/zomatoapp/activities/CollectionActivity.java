@@ -1,6 +1,7 @@
 package com.example.zomatoapp.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ import com.example.zomatoapp.fragments.DiningFragment;
 import com.example.zomatoapp.fragments.NightLifeFragment;
 import com.example.zomatoapp.fragments.ProfileFragment;
 import com.example.zomatoapp.helper.LocationHelper;
+import com.example.zomatoapp.ui.RestaurantListAdapter;
 import com.example.zomatoapp.utils.StaticValues;
 import com.example.zomatoapp.viewModel.CollectionsViewModel;
 import com.example.zomatoapp.viewModel.HomeViewModel;
@@ -31,6 +33,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -56,6 +60,8 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
     private int collectionId;
     private List<RestaurantItemViewModel> restaurantData = new ArrayList<>();
     private NestedScrollView scrollView;
+    private RestaurantListAdapter restaurantListAdapter;
+    private RecyclerView rvRestaurantListView;
 
 
     @Override
@@ -66,6 +72,7 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
         mBinding.setViewModel(mViewModel);
         collectionId = getIntent().getIntExtra(StaticValues.SearchApiKey.COLLECTION_ID_KEY, 1);
 
+        initView();
         EventBus.getDefault().register(this);
 
         fetchLocation();
@@ -75,6 +82,10 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
     private void initView() {
         scrollView = mBinding.clNestedScrollView;
         scrollView.setFillViewport(true);
+        rvRestaurantListView = mBinding.rvRestaurantList;
+        restaurantListAdapter = new RestaurantListAdapter(restaurantData);
+        rvRestaurantListView.setLayoutManager(new LinearLayoutManager(CollectionActivity.this, RecyclerView.VERTICAL, false));
+        rvRestaurantListView.setAdapter(restaurantListAdapter);
     }
 
     private void fetchLocation() {
@@ -115,6 +126,7 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
             viewModel.price.set(priceText);
             restaurantData.add(viewModel);
         }
+        restaurantListAdapter.setData(restaurantData);
     }
 
     @Override
