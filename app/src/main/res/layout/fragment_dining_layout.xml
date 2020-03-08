@@ -11,6 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="6dp"
         android:layout_marginBottom="12dp">
 
         <androidx.core.widget.NestedScrollView
@@ -34,7 +35,7 @@
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
                         android:text="@{viewModel.cityName}"
-                        android:textSize="20sp"
+                        android:textSize="16sp"
                         tools:text="Irvine" />
                 </RelativeLayout>
 
@@ -51,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_centerVertical="true"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="COLLECTIONS"/>
 
                     <TextView

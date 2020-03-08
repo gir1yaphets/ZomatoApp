@@ -111,7 +111,7 @@ public class ZomatoDataHelper {
                     public void onTechIssueError(Throwable t) {
 
                     }
-                }), getSearchInputParams(cityId, 0, 5, collectionId, categoryId, location));
+                }), getSearchInputParams(cityId, 0, 20, collectionId, categoryId, location));
     }
 
     public void getCityInfo(int category, Location location) {
