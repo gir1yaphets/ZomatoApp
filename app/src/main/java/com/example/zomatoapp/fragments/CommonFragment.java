@@ -56,6 +56,8 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
 
     private int categoryId;
 
+    private int cityId = 0;
+
     private Context context;
     private RecyclerView rvCollectionsView;
     private CollectionListAdapter collectionAdapter;
@@ -134,6 +136,7 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
         CollectionListModel collectionListModel = event.getCollectionListModel();
         for (CollectionListModel.Collections collectionModel : collectionListModel.getCollections()) {
             CollectionItemViewModel viewModel = new CollectionItemViewModel();
+            viewModel.setId(collectionModel.getCollection().getCollectionId());
             viewModel.collectionTitle.set(collectionModel.getCollection().getTitle());
             viewModel.imageUrl.set(collectionModel.getCollection().getImageUrl());
             viewModel.setListener(this);
@@ -178,10 +181,11 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
     }
 
     @Override
-    public void onCollectionSelect(int id) {
+    public void onCollectionSelect(int id, String image) {
         Intent intent = new Intent(context, CollectionActivity.class);
-        //id starts at 0, but collection id starts at 1
-        intent.putExtra(StaticValues.SearchApiKey.COLLECTION_ID_KEY, id+1);
+        intent.putExtra(StaticValues.EXTRA_COLLECTION_ID, id);
+        intent.putExtra(StaticValues.EXTRA_CITY_ID, cityId);
+        intent.putExtra(StaticValues.EXTRA_COLLECTION_IMAGE, image);
         startActivity(intent);
     }
 
@@ -194,11 +198,10 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
         Log.d(TAG, "onCitySuccessEvent: ");
         CityModel cityModel = event.getCityModel();
 
-        int cityId = cityModel.getLocationSuggestions().get(0).getId();
+        cityId = cityModel.getLocationSuggestions().get(0).getId();
         Location location = LocationHelper.getInstance().getCurrentLocation();
-        int collectionId = 1;
 
         mViewModel.retrieveCollections(cityId);
-        mViewModel.getSearchResult(cityId, collectionId, categoryId, location);
+        mViewModel.getSearchResult(cityId, -1, categoryId, location);
     }
 }

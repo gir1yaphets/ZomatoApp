@@ -1,7 +1,6 @@
 package com.example.zomatoapp.activities;
 
 import android.Manifest;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -37,11 +36,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     private NestedScrollView scrollView;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
-
-
-
-    private int cityId;
-    private Location location;
 
     private List<String> labels = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();

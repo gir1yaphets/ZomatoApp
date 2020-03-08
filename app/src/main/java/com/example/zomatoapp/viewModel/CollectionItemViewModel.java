@@ -10,7 +10,7 @@ import androidx.databinding.ObservableField;
 
 public class CollectionItemViewModel {
     public interface OnCollectionSelectListener {
-        void onCollectionSelect(int id);
+        void onCollectionSelect(int id, String image);
     }
 
     public ObservableField<String> collectionTitle = new ObservableField<>();
@@ -42,7 +42,7 @@ public class CollectionItemViewModel {
 
     public void onItemSelected(View view) {
         if (listener != null) {
-            listener.onCollectionSelect(id);
+            listener.onCollectionSelect(id, imageUrl.get());
         }
     }
 

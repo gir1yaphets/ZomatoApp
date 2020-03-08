@@ -189,8 +189,14 @@ public class ZomatoDataHelper {
         map.put(StaticValues.SearchApiKey.RADIUS_KEY, 100000);
         map.put(StaticValues.SearchApiKey.CUISINES_KEY, "");
 //        map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
-//        map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
-        map.put(StaticValues.SearchApiKey.CATEGORY_KEY, categoryId);
+        if (collectionId != -1) {
+            map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
+        }
+
+        if (categoryId != -1) {
+            map.put(StaticValues.SearchApiKey.CATEGORY_KEY, categoryId);
+        }
+
         map.put(StaticValues.SearchApiKey.SORT_KEY, "rating");
         map.put(StaticValues.SearchApiKey.ORDER_KEY, "desc");
 
