@@ -18,7 +18,6 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -33,7 +32,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     private HomeViewModel mViewModel;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private NestedScrollView scrollView;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
 
@@ -59,11 +57,8 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         swipeRefreshLayout = mBinding.sflRefreshContainer;
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        scrollView = mBinding.nsvScrollView;
         viewPager = mBinding.vpFragmentViewPager;
         tabLayout = mBinding.tlTabLayout;
-
-        scrollView.setFillViewport(true);
 
         fragments.add(CommonFragment.newInstance(CommonFragment.DINING_FRAGMENT));
         fragments.add(CommonFragment.newInstance(CommonFragment.NIGHT_LIFE_FRAGMENT));
