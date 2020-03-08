@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.zomatoapp.viewModel.DiningViewModel" />
+            type="com.example.zomatoapp.viewModel.CommonViewModel" />
     </data>
 
     <RelativeLayout

@@ -1,44 +1,19 @@
 package com.example.zomatoapp.activities;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.dataModel.RestaurantsModel;
 import com.example.zomatoapp.dataModel.SearchModel;
 import com.example.zomatoapp.databinding.ActivityCollectionBinding;
-import com.example.zomatoapp.databinding.ActivityHomeBinding;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
-import com.example.zomatoapp.fragments.DiningFragment;
-import com.example.zomatoapp.fragments.NightLifeFragment;
-import com.example.zomatoapp.fragments.ProfileFragment;
-import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.utils.StaticValues;
 import com.example.zomatoapp.viewModel.CollectionsViewModel;
-import com.example.zomatoapp.viewModel.HomeViewModel;
-import com.example.zomatoapp.viewModel.RestActivityViewModel;
-import com.example.zomatoapp.viewModel.RestTitleViewModel;
 import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.NestedScrollView;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager2.widget.ViewPager2;
-
-import android.view.View;
-
-import com.example.zomatoapp.R;
-import com.google.android.material.tabs.TabLayout;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,7 +22,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
+import androidx.databinding.DataBindingUtil;
 
 public class CollectionActivity extends AppCompatActivity implements RestaurantItemViewModel.OnRestaurantSelectListener{
     private static final String TAG = CollectionActivity.class.getName();
@@ -67,9 +45,6 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
         collectionId = getIntent().getIntExtra(StaticValues.SearchApiKey.COLLECTION_ID_KEY, 1);
 
         EventBus.getDefault().register(this);
-
-        fetchLocation();
-
     }
 
     private void initView() {
@@ -77,23 +52,10 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
         scrollView.setFillViewport(true);
     }
 
-    private void fetchLocation() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                .subscribe(granted -> {
-                    if (granted) {
-                        LocationHelper.getInstance().getRxLocation(CollectionActivity.this, (location, address) -> mViewModel.getCityInfo());
-                    }
-                });
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCitySuccessEvent(OnCitySuccessEvent event) {
         CityModel cityModel = event.getCityModel();
         int cityId = cityModel.getLocationSuggestions().get(0).getId();
-
-        mViewModel.retrieveCollections(cityId);
-        mViewModel.getSearchResult(cityId, collectionId, LocationHelper.getInstance().getCurrentLocation());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
