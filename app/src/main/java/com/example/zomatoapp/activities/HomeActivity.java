@@ -1,26 +1,17 @@
 package com.example.zomatoapp.activities;
 
 import android.Manifest;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.example.zomatoapp.R;
-import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.databinding.ActivityHomeBinding;
-import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
-import com.example.zomatoapp.fragments.DiningFragment;
-import com.example.zomatoapp.fragments.NightLifeFragment;
+import com.example.zomatoapp.fragments.CommonFragment;
 import com.example.zomatoapp.fragments.ProfileFragment;
-import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.viewModel.HomeViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +37,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
 
-
-
-    private int cityId;
-    private Location location;
-
     private List<String> labels = new ArrayList<>();
     private List<Fragment> fragments = new ArrayList<>();
 
@@ -66,9 +52,6 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         mBinding.setViewModel(mViewModel);
 
         initView();
-
-        EventBus.getDefault().register(this);
-
         fetchLocation();
     }
 
@@ -82,8 +65,8 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         scrollView.setFillViewport(true);
 
-        fragments.add(DiningFragment.newInstance());
-        fragments.add(NightLifeFragment.newInstance());
+        fragments.add(CommonFragment.newInstance(CommonFragment.DINING_FRAGMENT));
+        fragments.add(CommonFragment.newInstance(CommonFragment.NIGHT_LIFE_FRAGMENT));
         fragments.add(ProfileFragment.newInstance());
 
         initViewPager();
@@ -120,22 +103,10 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         RxPermissions rxPermissions = new RxPermissions(this);
         Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .subscribe(granted -> {
-                    if (granted) {
-                        LocationHelper.getInstance().getRxLocation(HomeActivity.this, (location, address) -> mViewModel.getCityInfo());
+                    if (!granted) {
+                        finish();
                     }
                 });
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCitySuccessEvent(OnCitySuccessEvent event) {
-        CityModel cityModel = event.getCityModel();
-
-        cityId = cityModel.getLocationSuggestions().get(0).getId();
-        location = LocationHelper.getInstance().getCurrentLocation();
-        int collectionId = 1;
-
-        mViewModel.retrieveCollections(cityId);
-        mViewModel.getSearchResult(cityId, collectionId, location);
     }
 
     @Override
