@@ -99,7 +99,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                 }), id);
     }
 
-    public void getSearchResult(final int cityId, int collectionId, Location location) {
+    public void getSearchResult(int cityId, int collectionId, int categoryId, Location location) {
         apiService.retrieveSearchResult(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<SearchModel>() {
                     @Override
@@ -110,8 +110,9 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
-                        onSearchSuccess(cityId, searchModel);
-                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel));
+//                        onSearchSuccess(cityId, searchModel);
+
+                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel, categoryId));
                     }
 
                     @Override
@@ -123,7 +124,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     public void onTechIssueError(Throwable t) {
 
                     }
-                }), getSearchInputParams(cityId, 0, 5, collectionId, location));
+                }), getSearchInputParams(cityId, 0, 20, collectionId, categoryId, location));
     }
 
     private void onSearchSuccess(int cityId, SearchModel searchModel) {
@@ -139,7 +140,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
         return dbSearchModel;
     }
 
-    public void getCityInfo(Location location) {
+    public void getCityInfo(int category, Location location) {
         apiService.retrieveCityInfo(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<CityModel>() {
                     @Override
@@ -150,7 +151,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     @Override
                     public void onSuccess(Response<CityModel> response) {
                         CityModel cityModel = response.body();
-                        EventBus.getDefault().post(new OnCitySuccessEvent(cityModel));
+                        EventBus.getDefault().post(new OnCitySuccessEvent(category, cityModel));
                     }
 
                     @Override
@@ -201,7 +202,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
         return map;
     }
 
-    private Map<String, Object> getSearchInputParams(int cityId, int start, int count, int collectionId,
+    private Map<String, Object> getSearchInputParams(int cityId, int start, int count, int collectionId, int categoryId,
                                                      Location location) {
         Map<String, Object> map = new HashMap<>();
         map.put(StaticValues.SearchApiKey.ENTITY_ID_KEY, cityId);
@@ -213,9 +214,15 @@ public class ZomatoDataHelper extends BaseDataHelper {
         map.put(StaticValues.LocationKey.LON_KEY, location.getLongitude());
         map.put(StaticValues.SearchApiKey.RADIUS_KEY, 100000);
         map.put(StaticValues.SearchApiKey.CUISINES_KEY, "");
-        map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
-        map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
-        map.put(StaticValues.SearchApiKey.CATEGORY_KEY, 3);
+//        map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
+        if (collectionId != -1) {
+            map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
+        }
+
+        if (categoryId != -1) {
+            map.put(StaticValues.SearchApiKey.CATEGORY_KEY, categoryId);
+        }
+
         map.put(StaticValues.SearchApiKey.SORT_KEY, "rating");
         map.put(StaticValues.SearchApiKey.ORDER_KEY, "desc");
 
