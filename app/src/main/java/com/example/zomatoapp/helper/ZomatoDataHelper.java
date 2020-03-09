@@ -240,6 +240,17 @@ public class ZomatoDataHelper extends BaseDataHelper {
 
     @Override
     public CachedData retrieveCacheDataImpl(RequestDataModel requestDataModel) {
+        switch (requestDataModel.getActionType()) {
+            case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
+            case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
+                DbSearchModel dbSearchModel = ((ZomatoDataManager) dataManager).queryRestaurants((SearchRequestModel) requestDataModel);
+                return new CachedData(dbSearchModel, false, true);
+
+            case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:
+            case ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS:
+                break;
+        }
+
         return null;
     }
 
