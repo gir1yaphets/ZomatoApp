@@ -41,7 +41,7 @@ public class CollectionsViewModel extends AndroidViewModel {
     public void retrieveRestaurantsInCollection(int cityId, int collectionId, int categoryId, Location location) {
         SearchRequestModel searchRequestModel = new SearchRequestModel(RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS);
 
-        searchRequestModel.setRequireCache(false); //todo
+        searchRequestModel.setRequireCache(false);
         searchRequestModel.setCityId(cityId);
         searchRequestModel.setCollectionId(collectionId);
         searchRequestModel.setCategoryId(categoryId);
