@@ -3,6 +3,8 @@ package com.example.zomatoapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.realmObject.DbRestaurantModel;
 import com.example.zomatoapp.dataModel.realmObject.DbRestaurantsModel;
@@ -39,6 +41,7 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
 
     private RecyclerView rvRestaurantList;
     private NestedScrollView scrollView;
+    private SkeletonScreen skeletonScreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,11 +74,23 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
         rvRestaurantList = mBinding.rvRestaurantList;
         rvRestaurantList.setLayoutManager(new LinearLayoutManager(this));
         rvRestaurantList.setAdapter(mViewModel.getRestAdapter());
+
+        skeletonScreen = Skeleton.bind(rvRestaurantList)
+                .adapter(mViewModel.getRestAdapter())
+                .shimmer(true)
+                .angle(20)
+                .frozen(false)
+                .duration(1200)
+                .count(10)
+                .load(R.layout.layout_skeleton_loading_item)
+                .show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchSuccessEvent(OnSearchSuccessEvent event) {
         if (event.getSearchRequestModel().getCategoryId() != -1) return;
+
+//        skeletonScreen.hide();
 
         DbSearchModel dbSearchModel = event.getDbSearchModel();
         for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {
