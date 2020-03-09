@@ -4,6 +4,7 @@ import android.app.Application;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.AllReviewsModel;
 import com.example.zomatoapp.dataModel.LocationModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
@@ -45,6 +46,7 @@ public class RestActivityViewModel extends AndroidViewModel {
     public static void loadRestImage(ImageView imageView, String url) {
         Glide.with(imageView.getContext())
                 .load(url)
+                .placeholder(R.drawable.banner_background)
                 .into(imageView);
     }
 

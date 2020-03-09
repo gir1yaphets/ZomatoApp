@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.activities.CollectionActivity;
 import com.example.zomatoapp.activities.RestaurantActivity;
@@ -65,6 +67,8 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
     private RecyclerView rvRestaurantListView;
     private RestaurantListAdapter restaurantListAdapter;
 
+    private SkeletonScreen skeletonScreen;
+
     public List<CollectionItemViewModel> getCollectionData() {
         return collectionData;
     }
@@ -115,9 +119,6 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
             mViewModel.getCityInfo(categoryId);
         });
 
-        //for test
-        mViewModel.getCityInfo(categoryId);
-
         return mBinding.getRoot();
     }
 
@@ -133,6 +134,16 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
 
         rvRestaurantListView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         rvRestaurantListView.setAdapter(restaurantListAdapter);
+
+        skeletonScreen = Skeleton.bind(rvRestaurantListView)
+                .adapter(restaurantListAdapter)
+                .shimmer(true)
+                .angle(20)
+                .frozen(false)
+                .duration(1200)
+                .count(10)
+                .load(R.layout.layout_skeleton_loading_item)
+                .show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -155,6 +166,7 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
         if (event.getSearchRequestModel().getCategoryId() != categoryId) return;
         Log.d(TAG, "onRestaurantSearchSuccessEvent: event.category = " + event.getCategory() + " curr category = " + categoryId);
 
+        skeletonScreen.hide();
         DbSearchModel dbSearchModel = event.getDbSearchModel();
 
         for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {

@@ -25,8 +25,8 @@ public class LocationHelper {
 
     public Location getCurrentLocation() {
         //for test
-        currentLocation.setLongitude(-117.00);
-        currentLocation.setLatitude(33.00);
+//        currentLocation.setLongitude(-117.00);
+//        currentLocation.setLatitude(33.00);
         return currentLocation;
     }
 

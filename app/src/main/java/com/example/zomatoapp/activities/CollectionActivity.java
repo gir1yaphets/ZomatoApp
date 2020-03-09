@@ -3,6 +3,8 @@ package com.example.zomatoapp.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.dataModel.realmObject.DbRestaurantModel;
 import com.example.zomatoapp.dataModel.realmObject.DbRestaurantsModel;
@@ -20,6 +22,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -37,8 +40,10 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
     private int cityId;
     private int collectionId;
 
+    private CoordinatorLayout clRootView;
     private RecyclerView rvRestaurantList;
     private NestedScrollView scrollView;
+    private SkeletonScreen skeletonScreen;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,17 +70,27 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
     }
 
     private void initView() {
+        clRootView = mBinding.clRootView;
         scrollView = mBinding.clNestedScrollView;
         scrollView.setFillViewport(true);
 
         rvRestaurantList = mBinding.rvRestaurantList;
         rvRestaurantList.setLayoutManager(new LinearLayoutManager(this));
         rvRestaurantList.setAdapter(mViewModel.getRestAdapter());
+
+        skeletonScreen = Skeleton.bind(clRootView)
+                .load(R.layout.activity_view_skeleton)
+                .duration(1000)
+                .color(R.color.shimmer_color)
+                .angle(0)
+                .show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchSuccessEvent(OnSearchSuccessEvent event) {
         if (event.getSearchRequestModel().getCategoryId() != -1) return;
+
+        skeletonScreen.hide();
 
         DbSearchModel dbSearchModel = event.getDbSearchModel();
         for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {
