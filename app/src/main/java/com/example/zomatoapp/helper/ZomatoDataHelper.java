@@ -102,7 +102,12 @@ public class ZomatoDataHelper extends BaseDataHelper {
                 }), id);
     }
 
-    public void getSearchResult(int cityId, int collectionId, int categoryId, Location location) {
+    public void getSearchResult(SearchRequestModel searchReqModel) {
+        int cityId = searchReqModel.getCityId();
+        int categoryId = searchReqModel.getCategoryId();
+        int collectionId = searchReqModel.getCollectionId();
+        Location location = searchReqModel.getLocation();
+
         apiService.retrieveSearchResult(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<SearchModel>() {
                     @Override
@@ -113,9 +118,10 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
-                        onSearchSuccess(cityId, categoryId, searchModel);
+                        DbSearchModel dbSearchModel = convertSearchData(cityId, categoryId, searchModel);
+                        onSearchSuccess(dbSearchModel);
 
-                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel, categoryId));
+                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchReqModel, dbSearchModel));
                     }
 
                     @Override
@@ -130,8 +136,8 @@ public class ZomatoDataHelper extends BaseDataHelper {
                 }), getSearchInputParams(cityId, 0, 20, collectionId, categoryId, location));
     }
 
-    private void onSearchSuccess(int cityId, int categoryId, SearchModel searchModel) {
-        dataManager.updateData("", convertSearchData(cityId, categoryId, searchModel));
+    private void onSearchSuccess(DbSearchModel dbSearchModel) {
+        dataManager.updateData("", dbSearchModel);
     }
 
     private DbSearchModel convertSearchData(int cityId, int categoryId, SearchModel searchModel) {
@@ -243,7 +249,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
             case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
             case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
                 SearchRequestModel searchReqModel = (SearchRequestModel) requestDataModel;
-                getSearchResult(searchReqModel.getCityId(), searchReqModel.getCollectionId(), searchReqModel.getCategoryId(), searchReqModel.getLocation());
+                getSearchResult(searchReqModel);
                 break;
 
             case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:

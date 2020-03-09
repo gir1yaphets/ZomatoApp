@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.zomatoapp.R;
-import com.example.zomatoapp.dataModel.RestaurantModel;
-import com.example.zomatoapp.dataModel.RestaurantsModel;
-import com.example.zomatoapp.dataModel.SearchModel;
+import com.example.zomatoapp.dataModel.realmObject.DbRestaurantModel;
+import com.example.zomatoapp.dataModel.realmObject.DbRestaurantsModel;
+import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
 import com.example.zomatoapp.databinding.ActivityCollectionBinding;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
 import com.example.zomatoapp.helper.LocationHelper;
@@ -75,11 +75,11 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSearchSuccessEvent(OnSearchSuccessEvent event) {
-        if (event.getCategory() != -1) return;
+        if (event.getSearchRequestModel().getCategoryId() != -1) return;
 
-        SearchModel searchModel = event.getSearchModel();
-        for (RestaurantsModel restaurantsModel : searchModel.getRestaurants()) {
-            RestaurantModel restaurantModel = restaurantsModel.getRestaurant();
+        DbSearchModel dbSearchModel = event.getDbSearchModel();
+        for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {
+            DbRestaurantModel restaurantModel = restaurantsModel.getRestaurant();
             RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
 
             viewModel.setId(Integer.parseInt(restaurantModel.getId()));
