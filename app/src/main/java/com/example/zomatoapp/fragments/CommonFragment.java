@@ -115,6 +115,7 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
             mViewModel.getCityInfo(categoryId);
         });
 
+        //for test
         mViewModel.getCityInfo(categoryId);
 
         return mBinding.getRoot();
