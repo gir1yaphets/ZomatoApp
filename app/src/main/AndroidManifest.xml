@@ -42,7 +42,6 @@
             android:resource="@color/colorAccent" />
 
         <activity android:name=".activities.HomeActivity">
-
         </activity>
         <activity android:name=".activities.RestaurantActivity"/>
         <activity

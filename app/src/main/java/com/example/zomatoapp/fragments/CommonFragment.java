@@ -14,9 +14,9 @@ import com.example.zomatoapp.activities.CollectionActivity;
 import com.example.zomatoapp.activities.RestaurantActivity;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
-import com.example.zomatoapp.dataModel.RestaurantModel;
-import com.example.zomatoapp.dataModel.RestaurantsModel;
-import com.example.zomatoapp.dataModel.SearchModel;
+import com.example.zomatoapp.dataModel.realmObject.DbRestaurantModel;
+import com.example.zomatoapp.dataModel.realmObject.DbRestaurantsModel;
+import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
@@ -97,6 +97,7 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         context = getActivity();
 
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_dining_layout, container, false);
@@ -113,6 +114,8 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
             mViewModel.cityName.set(address.getLocality());
             mViewModel.getCityInfo(categoryId);
         });
+
+        mViewModel.getCityInfo(categoryId);
 
         return mBinding.getRoot();
     }
@@ -148,13 +151,13 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRestaurantSearchSuccessEvent(OnSearchSuccessEvent event) {
-        if (event.getCategory() != categoryId) return;
+        if (event.getSearchRequestModel().getCategoryId() != categoryId) return;
         Log.d(TAG, "onRestaurantSearchSuccessEvent: event.category = " + event.getCategory() + " curr category = " + categoryId);
 
-        SearchModel searchModel = event.getSearchModel();
+        DbSearchModel dbSearchModel = event.getDbSearchModel();
 
-        for (RestaurantsModel restaurantsModel : searchModel.getRestaurants()) {
-            RestaurantModel restaurantModel = restaurantsModel.getRestaurant();
+        for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {
+            DbRestaurantModel restaurantModel = restaurantsModel.getRestaurant();
             RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
             viewModel.setId(Integer.parseInt(restaurantModel.getId()));
             viewModel.name.set(restaurantModel.getName());
@@ -203,5 +206,12 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
 
         mViewModel.retrieveCollections(cityId);
         mViewModel.getSearchResult(cityId, -1, categoryId, location);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
     }
 }

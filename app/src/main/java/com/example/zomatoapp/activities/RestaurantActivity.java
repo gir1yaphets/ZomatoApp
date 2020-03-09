@@ -67,7 +67,7 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
 
         int id = getIntent().getIntExtra(StaticValues.EXTRA_REST_ID, 0);
         mViewModel.retrieveSpecRestaurantInfo(id);
-        mViewModel.fetchRestReviewInfo(id, 0, 1);
+        mViewModel.fetchRestReviewInfo(id, 0, 10);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
     }

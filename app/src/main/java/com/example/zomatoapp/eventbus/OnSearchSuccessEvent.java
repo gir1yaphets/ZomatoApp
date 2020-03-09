@@ -1,9 +1,11 @@
 package com.example.zomatoapp.eventbus;
 
-import com.example.zomatoapp.dataModel.SearchModel;
+import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
+import com.example.zomatoapp.dataModel.requestModel.SearchRequestModel;
 
 public class OnSearchSuccessEvent {
-    private SearchModel searchModel;
+    private DbSearchModel dbSearchModel;
+    private SearchRequestModel searchRequestModel;
 
     public int getCategory() {
         return category;
@@ -15,12 +17,24 @@ public class OnSearchSuccessEvent {
 
     private int category;
 
-    public OnSearchSuccessEvent(SearchModel searchModel, int category) {
-        this.searchModel = searchModel;
-        this.category = category;
+    public OnSearchSuccessEvent(SearchRequestModel requestModel, DbSearchModel dbSearchModel) {
+        this.searchRequestModel = requestModel;
+        this.dbSearchModel = dbSearchModel;
     }
 
-    public SearchModel getSearchModel() {
-        return searchModel;
+    public DbSearchModel getDbSearchModel() {
+        return dbSearchModel;
+    }
+
+    public void setDbSearchModel(DbSearchModel dbSearchModel) {
+        this.dbSearchModel = dbSearchModel;
+    }
+
+    public SearchRequestModel getSearchRequestModel() {
+        return searchRequestModel;
+    }
+
+    public void setSearchRequestModel(SearchRequestModel searchRequestModel) {
+        this.searchRequestModel = searchRequestModel;
     }
 }

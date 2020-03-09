@@ -107,6 +107,10 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         //Todo: dummy process
-        new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 2000);
+        new Handler().postDelayed(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                },
+
+                2000);
     }
 }

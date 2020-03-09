@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.zomatoapp.activities.HomeActivity;
+import com.example.zomatoapp.helper.SharePreHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -15,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+
+import static com.example.zomatoapp.utils.StaticValues.SHARE_PRE_KEY_UUID;
 
 public class LoginViewModel extends AndroidViewModel {
     private static final String TAG = LoginViewModel.class.getName();
@@ -38,6 +41,8 @@ public class LoginViewModel extends AndroidViewModel {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithEmail:success");
                         FirebaseUser user = auth.getCurrentUser();
+                        SharePreHelper.putString(getApplication(), SHARE_PRE_KEY_UUID, user.getUid());
+
                         navigateToHomeActivity();
                     } else {
                         // If sign in fails, display a message to the user.

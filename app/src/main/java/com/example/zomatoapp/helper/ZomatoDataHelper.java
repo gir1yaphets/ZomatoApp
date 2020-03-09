@@ -8,15 +8,22 @@ import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
 import com.example.zomatoapp.dataModel.RestaurantModel;
 import com.example.zomatoapp.dataModel.SearchModel;
+import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
+import com.example.zomatoapp.dataModel.requestModel.CollectionRequestModel;
+import com.example.zomatoapp.dataModel.requestModel.RequestDataModel;
+import com.example.zomatoapp.dataModel.requestModel.SearchRequestModel;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnRestaurantsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnReviewSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
+import com.example.zomatoapp.manager.ZomatoDataManager;
 import com.example.zomatoapp.network.ApiService;
 import com.example.zomatoapp.network.RetrofitApiCallback;
 import com.example.zomatoapp.network.RetrofitErrorModel;
+import com.example.zomatoapp.utils.CommonUtil;
 import com.example.zomatoapp.utils.StaticValues;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -25,7 +32,12 @@ import java.util.Map;
 
 import retrofit2.Response;
 
-public class ZomatoDataHelper {
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS;
+import static com.example.zomatoapp.dataModel.requestModel.RequestDataModel.ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS;
+
+public class ZomatoDataHelper extends BaseDataHelper {
     private static final String TAG = ZomatoDataHelper.class.getName();
 
     private Context mContext;
@@ -34,6 +46,8 @@ public class ZomatoDataHelper {
     public ZomatoDataHelper(Context context) {
         mContext = context;
         apiService = ApiService.getInstance();
+
+        dataManager = new ZomatoDataManager();
     }
 
     public void retrieveCollection(int cityId) {
@@ -88,7 +102,12 @@ public class ZomatoDataHelper {
                 }), id);
     }
 
-    public void getSearchResult(int cityId, int collectionId, int categoryId, Location location) {
+    public void getSearchResult(SearchRequestModel searchReqModel) {
+        int cityId = searchReqModel.getCityId();
+        int categoryId = searchReqModel.getCategoryId();
+        int collectionId = searchReqModel.getCollectionId();
+        Location location = searchReqModel.getLocation();
+
         apiService.retrieveSearchResult(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<SearchModel>() {
                     @Override
@@ -99,7 +118,10 @@ public class ZomatoDataHelper {
                     @Override
                     public void onSuccess(Response<SearchModel> response) {
                         SearchModel searchModel = response.body();
-                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchModel, categoryId));
+                        DbSearchModel dbSearchModel = convertSearchData(cityId, categoryId, searchModel);
+                        onSearchSuccess(dbSearchModel);
+
+                        EventBus.getDefault().post(new OnSearchSuccessEvent(searchReqModel, dbSearchModel));
                     }
 
                     @Override
@@ -112,6 +134,20 @@ public class ZomatoDataHelper {
 
                     }
                 }), getSearchInputParams(cityId, 0, 20, collectionId, categoryId, location));
+    }
+
+    private void onSearchSuccess(DbSearchModel dbSearchModel) {
+        dataManager.updateData("", dbSearchModel);
+    }
+
+    private DbSearchModel convertSearchData(int cityId, int categoryId, SearchModel searchModel) {
+        Gson gson = new Gson();
+        String originalData = gson.toJson(searchModel);
+
+        DbSearchModel dbSearchModel = gson.fromJson(originalData, DbSearchModel.class);
+        dbSearchModel.setCategoryId(categoryId);
+        dbSearchModel.setId(CommonUtil.getCompoundKey(mContext, cityId, categoryId));
+        return dbSearchModel;
     }
 
     public void getCityInfo(int category, Location location) {
@@ -188,7 +224,6 @@ public class ZomatoDataHelper {
         map.put(StaticValues.LocationKey.LON_KEY, location.getLongitude());
         map.put(StaticValues.SearchApiKey.RADIUS_KEY, 100000);
         map.put(StaticValues.SearchApiKey.CUISINES_KEY, "");
-//        map.put(StaticValues.SearchApiKey.ESTABLISHMENT_TYPE_KEY, 31);
         if (collectionId != -1) {
             map.put(StaticValues.SearchApiKey.COLLECTION_ID_KEY, collectionId);
         }
@@ -201,5 +236,38 @@ public class ZomatoDataHelper {
         map.put(StaticValues.SearchApiKey.ORDER_KEY, "desc");
 
         return map;
+    }
+
+    @Override
+    public CachedData retrieveCacheDataImpl(RequestDataModel requestDataModel) {
+        switch (requestDataModel.getActionType()) {
+            case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
+            case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
+                DbSearchModel dbSearchModel = ((ZomatoDataManager) dataManager).queryRestaurants((SearchRequestModel) requestDataModel);
+                return new CachedData(dbSearchModel, false, true);
+
+            case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:
+            case ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS:
+                break;
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void retrieveDataImpl(RequestDataModel requestDataModel) {
+        switch (requestDataModel.getActionType()) {
+            case ACTION_MANUAL_RETRIEVE_ALL_RESTAURANTS:
+            case ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS:
+                SearchRequestModel searchReqModel = (SearchRequestModel) requestDataModel;
+                getSearchResult(searchReqModel);
+                break;
+
+            case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:
+            case ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS:
+                CollectionRequestModel collectionRequestModel = (CollectionRequestModel) requestDataModel;
+                retrieveCollection(collectionRequestModel.getCityId());
+                break;
+        }
     }
 }

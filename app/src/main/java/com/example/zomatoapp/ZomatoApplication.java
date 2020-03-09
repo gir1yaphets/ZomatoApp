@@ -11,6 +11,9 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import androidx.annotation.NonNull;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class ZomatoApplication extends Application {
     private static final String TAG = ZomatoApplication.class.getName();
     private static Context context;
@@ -20,6 +23,15 @@ public class ZomatoApplication extends Application {
         super.onCreate();
         context = this;
 
+        initializeRealm();
+    }
+
+    private void initializeRealm() {
+        //Initialize the Realm
+        Realm.init(this);
+
+        RealmConfiguration config = new RealmConfiguration.Builder().name("zomato.realm").build();
+        Realm.setDefaultConfiguration(config);
         initializeCloudMessaging();
     }
 

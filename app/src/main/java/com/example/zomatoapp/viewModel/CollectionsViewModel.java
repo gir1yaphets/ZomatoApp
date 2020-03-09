@@ -5,6 +5,8 @@ import android.location.Location;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.zomatoapp.dataModel.requestModel.RequestDataModel;
+import com.example.zomatoapp.dataModel.requestModel.SearchRequestModel;
 import com.example.zomatoapp.helper.ZomatoDataHelper;
 import com.example.zomatoapp.ui.RestaurantListAdapter;
 
@@ -37,7 +39,15 @@ public class CollectionsViewModel extends AndroidViewModel {
     }
 
     public void retrieveRestaurantsInCollection(int cityId, int collectionId, int categoryId, Location location) {
-        zomatoDataHelper.getSearchResult(cityId, collectionId, categoryId, location);
+        SearchRequestModel searchRequestModel = new SearchRequestModel(RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS);
+
+        searchRequestModel.setRequireCache(false);
+        searchRequestModel.setCityId(cityId);
+        searchRequestModel.setCollectionId(collectionId);
+        searchRequestModel.setCategoryId(categoryId);
+        searchRequestModel.setLocation(location);
+
+        zomatoDataHelper.retrieveData(searchRequestModel);
     }
 
     public void addRestItem(RestaurantItemViewModel itemViewModel) {

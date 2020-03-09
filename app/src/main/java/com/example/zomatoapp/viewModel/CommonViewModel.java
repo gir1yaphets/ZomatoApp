@@ -3,6 +3,8 @@ package com.example.zomatoapp.viewModel;
 import android.content.Context;
 import android.location.Location;
 
+import com.example.zomatoapp.dataModel.requestModel.RequestDataModel;
+import com.example.zomatoapp.dataModel.requestModel.SearchRequestModel;
 import com.example.zomatoapp.helper.LocationHelper;
 import com.example.zomatoapp.helper.ZomatoDataHelper;
 
@@ -28,7 +30,15 @@ public class CommonViewModel {
     }
 
     public void getSearchResult(int cityId, int collectionId, int categoryId, Location location) {
-        zomatoDataHelper.getSearchResult(cityId, collectionId, categoryId, location);
+        SearchRequestModel searchRequestModel = new SearchRequestModel(RequestDataModel.ACTION_AUTO_RETRIEVE_ALL_RESTAURANTS);
+
+        searchRequestModel.setRequireCache(false);
+        searchRequestModel.setCityId(cityId);
+        searchRequestModel.setCollectionId(collectionId);
+        searchRequestModel.setCategoryId(categoryId);
+        searchRequestModel.setLocation(location);
+
+        zomatoDataHelper.retrieveData(searchRequestModel);
     }
 
     public void retrieveCollections(int cityId) {
