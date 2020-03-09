@@ -121,4 +121,11 @@ public class CollectionActivity extends AppCompatActivity implements RestaurantI
         intent.putExtra(StaticValues.EXTRA_REST_ID, id);
         startActivity(intent);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        EventBus.getDefault().unregister(this);
+    }
 }

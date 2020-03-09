@@ -2,6 +2,7 @@ package com.example.zomatoapp.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.zomatoapp.R;
@@ -41,6 +42,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RestaurantActivity extends AppCompatActivity implements OnMapReadyCallback {
+    private static final String TAG = RestaurantActivity.class.getName();
+    
     private ActivityRestaurantBinding mBinding;
     private RestActivityViewModel mViewModel;
 
@@ -136,5 +139,12 @@ public class RestaurantActivity extends AppCompatActivity implements OnMapReadyC
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
             googleMap.addMarker(new MarkerOptions().position(latLng).title(mViewModel.titleViewModel.restName.getValue()));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -22,7 +22,7 @@ public class ReviewModel {
      */
 
     @SerializedName("rating")
-    private int rating;
+    private float rating;
     @SerializedName("review_text")
     private String reviewText;
     @SerializedName("id")
@@ -42,11 +42,11 @@ public class ReviewModel {
     @SerializedName("comments_count")
     private int commentsCount;
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 

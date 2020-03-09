@@ -102,6 +102,11 @@ public class RestActivityViewModel extends AndroidViewModel {
             itemViewModel.userPhotoUrl.set(review.getUser().getProfileImage());
             itemViewModel.reviewTime.set(review.getReviewTimeFriendly());
             itemViewModel.comments.set(review.getReviewText());
+            itemViewModel.rating.set(Math.round(review.getRating()) + "★");
+            itemViewModel.ratingColor.set(review.getRatingColor());
+            itemViewModel.ratingText.set(review.getRatingText());
+
+//            itemViewModel.reviewAndFollow.set(review.getUser().);
 
             reviewViewModel.addReview(itemViewModel);
         }
