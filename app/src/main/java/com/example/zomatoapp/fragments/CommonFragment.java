@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,8 +45,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class CommonFragment extends Fragment implements RestaurantItemViewModel.OnRestaurantSelectListener, CollectionItemViewModel.OnCollectionSelectListener{
+public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, RestaurantItemViewModel.OnRestaurantSelectListener, CollectionItemViewModel.OnCollectionSelectListener{
     private static final String TAG = CommonFragment.class.getName();
 
     public static final String FRAGMENT_TYPE = "FRAGMENT_TYPE";
@@ -61,6 +63,9 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
     private int cityId = 0;
 
     private Context context;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private RecyclerView rvCollectionsView;
     private CollectionListAdapter collectionAdapter;
 
@@ -123,6 +128,9 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
     }
 
     private void initView() {
+        swipeRefreshLayout = mBinding.sflRefreshContainer;
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         rvCollectionsView = mBinding.rvCollectionList;
         collectionAdapter = new CollectionListAdapter(collectionData);
 
@@ -226,5 +234,14 @@ public class CommonFragment extends Fragment implements RestaurantItemViewModel.
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                },
+
+                2000);
     }
 }

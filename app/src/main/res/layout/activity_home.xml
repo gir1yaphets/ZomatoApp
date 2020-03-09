@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.zomatoapp.viewModel.HomeViewModel" />
@@ -13,31 +14,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/sflRefreshContainer"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vpFragmentViewPager"
             android:layout_above="@id/tlTabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:context=".activities.HomeActivity">
-
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/vpFragmentViewPager"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </RelativeLayout>
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            android:layout_height="match_parent" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tlTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            app:tabIndicatorGravity="top"
-            android:minHeight="50dp" />
+            android:minHeight="50dp"
+            app:tabIndicatorGravity="top" />
     </RelativeLayout>
 </layout>

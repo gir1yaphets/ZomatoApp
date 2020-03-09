@@ -1,8 +1,6 @@
 package com.example.zomatoapp.activities;
 
-import android.Manifest;
 import android.os.Bundle;
-import android.os.Handler;
 
 import com.example.zomatoapp.R;
 import com.example.zomatoapp.databinding.ActivityHomeBinding;
@@ -11,7 +9,6 @@ import com.example.zomatoapp.fragments.ProfileFragment;
 import com.example.zomatoapp.viewModel.HomeViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,18 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
-import io.reactivex.disposables.Disposable;
 
-public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = HomeActivity.class.getName();
     private ActivityHomeBinding mBinding;
     private HomeViewModel mViewModel;
 
-    private SwipeRefreshLayout swipeRefreshLayout;
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
 
@@ -50,13 +44,9 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         mBinding.setViewModel(mViewModel);
 
         initView();
-        fetchLocation();
     }
 
     private void initView() {
-        swipeRefreshLayout = mBinding.sflRefreshContainer;
-        swipeRefreshLayout.setOnRefreshListener(this);
-
         viewPager = mBinding.vpFragmentViewPager;
         tabLayout = mBinding.tlTabLayout;
 
@@ -92,25 +82,5 @@ public class HomeActivity extends AppCompatActivity implements SwipeRefreshLayou
         labels.add(LABEL_PROFILE);
 
         new TabLayoutMediator(tabLayout, viewPager, true, (tab, position) -> tab.setText(labels.get(position))).attach();
-    }
-
-    private void fetchLocation() {
-        RxPermissions rxPermissions = new RxPermissions(this);
-        Disposable disposable = rxPermissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
-                .subscribe(granted -> {
-                    if (!granted) {
-                        finish();
-                    }
-                });
-    }
-
-    @Override
-    public void onRefresh() {
-        //Todo: dummy process
-        new Handler().postDelayed(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                },
-
-                2000);
     }
 }
