@@ -24,9 +24,12 @@ public class LocationHelper {
     private Location currentLocation = new Location("0.0");
 
     public Location getCurrentLocation() {
-        //for test
-//        currentLocation.setLongitude(-117.00);
-//        currentLocation.setLatitude(33.00);
+        //add default location
+        if (currentLocation.getLatitude() == 0.0) {
+            currentLocation.setLongitude(-117.00);
+            currentLocation.setLatitude(33.00);
+        }
+
         return currentLocation;
     }
 
