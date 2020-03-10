@@ -6,8 +6,10 @@
             type="com.example.zomatoapp.viewModel.LoginViewModel" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/login_background_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -21,25 +23,43 @@
         <EditText
             android:id="@+id/etPassword"
             android:text="@={viewModel.password}"
+            android:layout_below="@id/etEmail"
             android:layout_width="match_parent"
             android:hint="Input Password"
             android:inputType="textPassword"
             android:layout_height="50dp"/>
 
+        <TextView
+            android:id="@+id/tvSkip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skip"
+            android:textSize="16sp"
+            android:onClick="@{viewModel::onSkip}"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/etPassword"/>
+
         <Button
             android:id="@+id/btLogin"
             android:text="Sign In"
+            android:background="@drawable/round_corner_rect_transparent"
             android:onClick="@{viewModel::onSignIn}"
+            android:layout_above="@id/btSignUp"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
 
         <Button
             android:id="@+id/btSignUp"
             android:text="Sign Up"
+            android:background="@drawable/round_corner_rect_transparent"
             android:onClick="@{viewModel::onSignUp}"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="18dp"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </layout>

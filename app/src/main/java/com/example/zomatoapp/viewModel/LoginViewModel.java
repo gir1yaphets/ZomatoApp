@@ -35,6 +35,10 @@ public class LoginViewModel extends AndroidViewModel {
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     public void onSignIn(View view) {
+        if (email.getValue() == null || password.getValue() == null) {
+            Toast.makeText(getApplication(), "Please input valid email and password.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         auth.signInWithEmailAndPassword(email.getValue(), password.getValue())
                 .addOnCompleteListener(getApplication().getMainExecutor(), (task) -> {
                     if (task.isSuccessful()) {
@@ -55,6 +59,11 @@ public class LoginViewModel extends AndroidViewModel {
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     public void onSignUp(View view) {
+        if (email.getValue() == null || password.getValue() == null) {
+            Toast.makeText(getApplication(), "Please input valid email and password.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         auth.createUserWithEmailAndPassword(email.getValue(), password.getValue())
                 .addOnCompleteListener(getApplication().getMainExecutor(),
                         (task) -> {
@@ -69,6 +78,10 @@ public class LoginViewModel extends AndroidViewModel {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
+    }
+
+    public void onSkip(View view) {
+        navigateToHomeActivity();
     }
 
     private void navigateToHomeActivity() {

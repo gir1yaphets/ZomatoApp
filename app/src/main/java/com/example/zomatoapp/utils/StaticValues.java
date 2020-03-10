@@ -34,6 +34,8 @@ public class StaticValues {
     public static final String SHARE_PRE_KEY_LAST_TIMESTAMP = "SHARE_PRE_KEY_LAST_TIMESTAMP";
 
 
+    public static final String DEFAULT_CHANNEL_ID = "all";
+
     /**
      * For api request
      */
