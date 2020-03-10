@@ -2,7 +2,9 @@ package com.example.zomatoapp.dataModel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class CollectionModel {
+import java.io.Serializable;
+
+public class CollectionModel implements Serializable {
     @SerializedName("collection_id")
     private int collectionId;
     @SerializedName("res_count")

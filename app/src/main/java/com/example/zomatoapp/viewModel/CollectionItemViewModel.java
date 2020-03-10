@@ -5,15 +5,22 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
+
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.ObservableField;
 
-public class CollectionItemViewModel {
+public class CollectionItemViewModel implements Serializable {
+
     public interface OnCollectionSelectListener {
         void onCollectionSelect(int id, String image);
     }
 
     public ObservableField<String> collectionTitle = new ObservableField<>();
+
+    public ObservableField<String> description = new ObservableField<>();
+
+    public ObservableField<String> restCount = new ObservableField<>();
 
     public ObservableField<String> imageUrl = new ObservableField<>();
 

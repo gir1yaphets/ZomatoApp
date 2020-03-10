@@ -10,6 +10,7 @@
     </data>
 
     <RelativeLayout
+        android:id="@+id/rlRootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="12dp"
@@ -67,6 +68,7 @@
                             android:layout_height="match_parent"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
+                            android:onClick="@{viewModel::onSeeAllClick}"
                             android:text="See all"
                             android:textColor="@color/Red"
                             android:textSize="15sp" />
@@ -77,6 +79,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/rlTitleContainer"
+                        android:adapter="@{viewModel.getCollectionAdapter}"
                         android:layout_marginTop="10dp" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -84,6 +87,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/rvCollectionList"
+                        android:adapter="@{viewModel.getRestaurantListAdapter}"
                         android:layout_marginTop="50dp" />
 
                 </RelativeLayout>

@@ -9,6 +9,8 @@ public class CollectionRequestModel extends RequestDataModel {
 
     private int categoryId;
 
+    private int count;
+
     public int getCityId() {
         return cityId;
     }
@@ -23,5 +25,13 @@ public class CollectionRequestModel extends RequestDataModel {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

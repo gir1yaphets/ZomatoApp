@@ -1,7 +1,6 @@
 package com.example.zomatoapp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,31 +12,19 @@ import android.view.ViewGroup;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.zomatoapp.R;
-import com.example.zomatoapp.activities.CollectionActivity;
-import com.example.zomatoapp.activities.RestaurantActivity;
 import com.example.zomatoapp.dataModel.CityModel;
 import com.example.zomatoapp.dataModel.CollectionListModel;
-import com.example.zomatoapp.dataModel.realmObject.DbRestaurantModel;
-import com.example.zomatoapp.dataModel.realmObject.DbRestaurantsModel;
 import com.example.zomatoapp.dataModel.realmObject.DbSearchModel;
 import com.example.zomatoapp.databinding.FragmentDiningLayoutBinding;
 import com.example.zomatoapp.eventbus.OnCitySuccessEvent;
 import com.example.zomatoapp.eventbus.OnCollectionsSuccessEvent;
 import com.example.zomatoapp.eventbus.OnSearchSuccessEvent;
 import com.example.zomatoapp.helper.LocationHelper;
-import com.example.zomatoapp.ui.CollectionListAdapter;
-import com.example.zomatoapp.ui.RestaurantListAdapter;
-import com.example.zomatoapp.utils.StaticValues;
-import com.example.zomatoapp.viewModel.CollectionItemViewModel;
 import com.example.zomatoapp.viewModel.CommonViewModel;
-import com.example.zomatoapp.viewModel.RestaurantItemViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,7 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, RestaurantItemViewModel.OnRestaurantSelectListener, CollectionItemViewModel.OnCollectionSelectListener{
+public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = CommonFragment.class.getName();
 
     public static final String FRAGMENT_TYPE = "FRAGMENT_TYPE";
@@ -60,39 +47,15 @@ public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     private int categoryId;
 
-    private int cityId = 0;
-
     private Context context;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private RecyclerView rvCollectionsView;
-    private CollectionListAdapter collectionAdapter;
 
     private RecyclerView rvRestaurantListView;
-    private RestaurantListAdapter restaurantListAdapter;
 
     private SkeletonScreen skeletonScreen;
-
-    public List<CollectionItemViewModel> getCollectionData() {
-        return collectionData;
-    }
-
-    public void setCollectionData(List<CollectionItemViewModel> collectionData) {
-        this.collectionData = collectionData;
-    }
-
-    private List<CollectionItemViewModel> collectionData = new ArrayList<>();
-
-    public List<RestaurantItemViewModel> getRestaurantData() {
-        return restaurantData;
-    }
-
-    public void setRestaurantData(List<RestaurantItemViewModel> restaurantData) {
-        this.restaurantData = restaurantData;
-    }
-
-    private List<RestaurantItemViewModel> restaurantData = new ArrayList<>();
 
     public static CommonFragment newInstance(int type) {
         CommonFragment commonFragment = new CommonFragment();
@@ -132,85 +95,38 @@ public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRef
         swipeRefreshLayout.setOnRefreshListener(this);
 
         rvCollectionsView = mBinding.rvCollectionList;
-        collectionAdapter = new CollectionListAdapter(collectionData);
-
         rvCollectionsView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-        rvCollectionsView.setAdapter(collectionAdapter);
+        rvCollectionsView.setAdapter(mViewModel.getCollectionAdapter());
 
         rvRestaurantListView = mBinding.rvRestaurantList;
-        restaurantListAdapter = new RestaurantListAdapter(restaurantData);
-
         rvRestaurantListView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
-        rvRestaurantListView.setAdapter(restaurantListAdapter);
+        rvRestaurantListView.setAdapter(mViewModel.getRestaurantListAdapter());
 
-        skeletonScreen = Skeleton.bind(rvRestaurantListView)
-                .adapter(restaurantListAdapter)
-                .shimmer(true)
-                .angle(20)
-                .frozen(false)
-                .duration(1200)
-                .count(10)
-                .load(R.layout.layout_skeleton_loading_item)
+        skeletonScreen = Skeleton.bind(swipeRefreshLayout)
+                .load(R.layout.activity_view_skeleton)
+                .duration(1000)
+                .color(R.color.shimmer_color)
+                .angle(0)
                 .show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCollectionsSuccessEvent(OnCollectionsSuccessEvent event) {
-        CollectionListModel collectionListModel = event.getCollectionListModel();
-        for (CollectionListModel.Collections collectionModel : collectionListModel.getCollections()) {
-            CollectionItemViewModel viewModel = new CollectionItemViewModel();
-            viewModel.setId(collectionModel.getCollection().getCollectionId());
-            viewModel.collectionTitle.set(collectionModel.getCollection().getTitle());
-            viewModel.imageUrl.set(collectionModel.getCollection().getImageUrl());
-            viewModel.setListener(this);
-            collectionData.add(viewModel);
-        }
+        if (event.getCollectionRequestModel().getCategoryId() != categoryId) return;
 
-        collectionAdapter.setData(collectionData);
+        CollectionListModel collectionListModel = event.getCollectionListModel();
+        mViewModel.updateCollectionViewModel(collectionListModel);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRestaurantSearchSuccessEvent(OnSearchSuccessEvent event) {
         if (event.getSearchRequestModel().getCategoryId() != categoryId) return;
-        Log.d(TAG, "onRestaurantSearchSuccessEvent: event.category = " + event.getCategory() + " curr category = " + categoryId);
+        Log.d(TAG, "onRestaurantSearchSuccessEvent: event.category = " + event.getSearchRequestModel().getCategoryId() + " curr category = " + categoryId);
 
         skeletonScreen.hide();
         DbSearchModel dbSearchModel = event.getDbSearchModel();
 
-        for (DbRestaurantsModel restaurantsModel : dbSearchModel.getRestaurants()) {
-            DbRestaurantModel restaurantModel = restaurantsModel.getRestaurant();
-            RestaurantItemViewModel viewModel = new RestaurantItemViewModel();
-            viewModel.setId(Integer.parseInt(restaurantModel.getId()));
-            viewModel.name.set(restaurantModel.getName());
-            viewModel.description.set(restaurantModel.getCuisines());
-            viewModel.status.set(restaurantModel.getTimings());
-            viewModel.location.set(restaurantModel.getLocation().getCity());
-            viewModel.imageUrl.set(restaurantModel.getThumb());
-            viewModel.rating.set(restaurantModel.getUserRating().getAggregateRating());
-            viewModel.setListener(this);
-            int priceForTwo = restaurantModel.getAverageCostForTwo();
-            String priceText = "$" + priceForTwo + " for two people(approx.)";
-            viewModel.price.set(priceText);
-            restaurantData.add(viewModel);
-        }
-
-        restaurantListAdapter.setData(restaurantData);
-    }
-
-    @Override
-    public void onRestaurantSelect(int id) {
-        Intent intent = new Intent(context, RestaurantActivity.class);
-        intent.putExtra(StaticValues.EXTRA_REST_ID, id);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onCollectionSelect(int id, String image) {
-        Intent intent = new Intent(context, CollectionActivity.class);
-        intent.putExtra(StaticValues.EXTRA_COLLECTION_ID, id);
-        intent.putExtra(StaticValues.EXTRA_CITY_ID, cityId);
-        intent.putExtra(StaticValues.EXTRA_COLLECTION_IMAGE, image);
-        startActivity(intent);
+        mViewModel.updateRestaurantViewModel(dbSearchModel);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -222,10 +138,11 @@ public class CommonFragment extends Fragment implements SwipeRefreshLayout.OnRef
         Log.d(TAG, "onCitySuccessEvent: ");
         CityModel cityModel = event.getCityModel();
 
-        cityId = cityModel.getLocationSuggestions().get(0).getId();
+        int cityId = cityModel.getLocationSuggestions().get(0).getId();
+        mViewModel.cityId.set(cityId);
         Location location = LocationHelper.getInstance().getCurrentLocation();
 
-        mViewModel.retrieveCollections(cityId);
+        mViewModel.retrieveCollections(cityId, categoryId, 8);
         mViewModel.getSearchResult(cityId, -1, categoryId, location);
     }
 

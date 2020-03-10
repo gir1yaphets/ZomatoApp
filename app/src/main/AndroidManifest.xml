@@ -55,6 +55,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".activities.CollectionListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity android:name=".activities.LoginActivity"
             android:screenOrientation="portrait" >
             <intent-filter>

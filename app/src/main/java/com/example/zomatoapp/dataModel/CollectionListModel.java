@@ -1,8 +1,9 @@
 package com.example.zomatoapp.dataModel;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CollectionListModel {
+public class CollectionListModel implements Serializable {
     private int hasMore;
     private String shareUrl;
     private String displayText;
@@ -60,7 +61,7 @@ public class CollectionListModel {
         this.collections = collections;
     }
 
-    public static class Collections {
+    public static class Collections implements Serializable {
         private CollectionModel collection;
 
         public CollectionModel getCollection() {

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.zomatoapp.viewModel.CollectionItemViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:onClick="@{viewModel::onItemSelected}"
+        android:layout_marginBottom="16dp">
+
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardPreventCornerOverlap="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/ivCollectionImage"
+                    app:imageUrl="@{viewModel.imageUrl}"
+                    android:scaleType="centerCrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp"
+                    android:layout_gravity="bottom">
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/White"
+                        android:text="@{viewModel.collectionTitle}"
+                        tools:text="Trending This Week"/>
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="10sp"
+                        android:textColor="@color/White"
+                        android:text="@{viewModel.description}"
+                        tools:text="Most popular restaurants in town this week"/>
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="10sp"
+                        android:textColor="@color/White"
+                        android:text="@{viewModel.restCount}"
+                        tools:text="30 Places"/>
+
+                </LinearLayout>
+
+
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+</layout>

@@ -9,6 +9,9 @@ public class StaticValues {
 
     public static final String USER_KEY = "user-key";
 
+    /**
+     * For extra keys
+     */
     public static final String EXTRA_REST_ID = "EXTRA_REST_ID";
 
     public static final String EXTRA_CITY_ID = "EXTRA_CITY_ID";
@@ -16,6 +19,8 @@ public class StaticValues {
     public static final String EXTRA_COLLECTION_IMAGE = "EXTRA_COLLECTION_IMAGE";
 
     public static final String EXTRA_COLLECTION_ID = "EXTRA_COLLECTION_ID";
+
+    public static final String EXTRA_COLLECTION_LIST = "EXTRA_COLLECTION_LIST";
 
     public static final String EMAIL_DEEP_LINK = "https://www.example.zomatoapp/finishSignUp?cartId=1234";
 

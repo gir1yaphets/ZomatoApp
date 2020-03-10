@@ -7,16 +7,6 @@ public class OnSearchSuccessEvent {
     private DbSearchModel dbSearchModel;
     private SearchRequestModel searchRequestModel;
 
-    public int getCategory() {
-        return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
-    }
-
-    private int category;
-
     public OnSearchSuccessEvent(SearchRequestModel requestModel, DbSearchModel dbSearchModel) {
         this.searchRequestModel = requestModel;
         this.dbSearchModel = dbSearchModel;

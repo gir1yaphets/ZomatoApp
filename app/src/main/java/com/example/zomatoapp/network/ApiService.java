@@ -38,13 +38,13 @@ public class ApiService {
         commonCall.enqueue(callback);
     }
 
-    public void retrieveCollections(RetrofitApiCallback<CollectionListModel> callback, int cityId) {
+    public void retrieveCollections(RetrofitApiCallback<CollectionListModel> callback, int cityId, int count) {
         Call commonCall = HttpUtils.getApiGatewayRetrofit().create(CommonApi.class).getCollections(
                 StaticValues.API_VERSION,
                 cityId,
                 LocationHelper.getInstance().getCurrentLocation().getLatitude(),
-                LocationHelper.getInstance().getCurrentLocation().getLatitude(),
-                6
+                LocationHelper.getInstance().getCurrentLocation().getLongitude(),
+                count
         );
 
         commonCall.enqueue(callback);

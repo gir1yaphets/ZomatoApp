@@ -50,7 +50,10 @@ public class ZomatoDataHelper extends BaseDataHelper {
         dataManager = new ZomatoDataManager();
     }
 
-    public void retrieveCollection(int cityId) {
+    public void retrieveCollection(CollectionRequestModel collectionRequestModel) {
+        int cityId = collectionRequestModel.getCityId();
+        int count = collectionRequestModel.getCount();
+
         apiService.retrieveCollections(new RetrofitApiCallback<>(
                 new RetrofitApiCallback.OnActionHandleListener<CollectionListModel>() {
                     @Override
@@ -61,7 +64,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     @Override
                     public void onSuccess(Response<CollectionListModel> response) {
                         CollectionListModel collectionModelList = response.body();
-                        EventBus.getDefault().post(new OnCollectionsSuccessEvent(collectionModelList));
+                        EventBus.getDefault().post(new OnCollectionsSuccessEvent(collectionRequestModel, collectionModelList));
                     }
 
                     @Override
@@ -73,7 +76,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
                     public void onTechIssueError(Throwable t) {
 
                     }
-                }), cityId);
+                }), cityId, count);
     }
 
     public void retrieveRestaurant(int id) {
@@ -266,7 +269,7 @@ public class ZomatoDataHelper extends BaseDataHelper {
             case ACTION_MANUAL_RETRIEVE_ALL_COLLECTIONS:
             case ACTION_AUTO_RETRIEVE_ALL_COLLECTIONS:
                 CollectionRequestModel collectionRequestModel = (CollectionRequestModel) requestDataModel;
-                retrieveCollection(collectionRequestModel.getCityId());
+                retrieveCollection(collectionRequestModel);
                 break;
         }
     }
